@@ -1,0 +1,8 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_detail_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="split.timing.NEWDetailActivity"
+    tools:ignore="MergeRootFrame" />
+<!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/activity_new_detail.xml -->

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="2" >
+
+    <dataSet config="2.0.1" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\2.0.1\assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\src\main\assets" >
+            <file
+                name="timing.db"
+                path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\src\main\assets\timing.db" />
+        </source>
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\src\debug\assets" />
+    </dataSet>
+
+</merger>

@@ -1,0 +1,14 @@
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:paddingLeft="15dip"
+    android:paddingRight="15dip"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <NumberPicker
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:layout_height="wrap_content"
+        android:id="@+id/numberPicker" />
+</LinearLayout><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/fragment_add_empty_positions.xml -->

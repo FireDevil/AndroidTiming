@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">AndroidTiming</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_example">Example action</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_acp">ACP</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="title_new_list">NEWs</string>
+    <string name="title_new_detail">NEW Detail</string>
+    <string name="title_activity_add_competition">AddCompetition</string>
+    <string name="title_activity_select_competition">SelectCompetition</string>
+    <string name="title_activity_add_group">AddGroup</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="startlistName">e.g: U23</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+    <string name="save">Save</string>
+    <string name="name_required">Sorry, but the full name is required at least</string>
+    <string name="sort">Sort</string>
+    <string name="order_by">Order by: </string>
+    <string name="title_activity_group">GroupActivity</string>
+
+    <string-array name="version_array">
+        <item>Interval start</item>
+        <item>Mass start</item>
+    </string-array>
+
+    <string name="title_activity_startgroup__dialog_">Startgroup_Dialog_Activity</string>
+    <string name="title_activity_startgroup__dialog">Startgroup_Dialog</string>
+    <string name="title_activity_timing">Timing</string>
+
+</resources>

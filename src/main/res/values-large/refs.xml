@@ -1,0 +1,10 @@
+<resources>
+    <!--
+    Layout alias to replace the single-pane version of the layout with a
+    two-pane version on Large screens.
+<item type="layout" name="fragment_startlist">@layout/fragment_two_competition</item>
+    For more on layout aliases, see:
+    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
+    -->
+
+</resources>

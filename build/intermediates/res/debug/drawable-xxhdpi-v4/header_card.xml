@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/header_card_border">
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <corners android:radius="10dp"/>
+
+            <solid android:color="#000000" />
+
+        </shape>
+    </item>
+
+    <item android:bottom="2dp"
+        android:top="2dp"
+        android:right="3dp"
+        android:left="3dp">
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <corners android:radius="10dp" />
+
+            <solid android:color="@android:color/white" />
+
+            <padding android:bottom="10dp"
+                android:left="8dp"
+                android:right="8dp"
+                android:top="8dp" />
+        </shape>
+    </item>
+</layer-list><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/drawable-xxhdpi/header_card.xml -->

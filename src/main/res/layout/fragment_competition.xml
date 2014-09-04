@@ -1,0 +1,90 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f0f0f0"
+    tools:context="split.timing.SportsFragment">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/competition_name_text"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingRight="2dp"
+                    android:text="Name: "
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/competition_name_edit"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:hint="New York Marathon"
+                    android:inputType="textPersonName"
+                    android:paddingLeft="8dp"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/competition_location_text"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:paddingRight="2dp"
+                    android:text="Location:"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/competition_location_edit"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:hint="London"
+                    android:inputType="textPersonName"
+                    android:paddingLeft="8dp"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <DatePicker
+                android:id="@+id/competition_datepicker"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:background="@drawable/card"
+                android:calendarViewShown="false"
+                android:padding="4dp"
+                android:spinnersShown="true"
+                android:startYear="1950" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

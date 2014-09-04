@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="split.timing"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <application
+        android:name="split.timing.helpers.ACP"
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="split.timing.Main"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="split.timing.NEWListActivity"
+            android:label="@string/title_new_list"
+            android:parentActivityName="split.timing.Main" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Main" />
+        </activity>
+        <activity
+            android:name="split.timing.NEWDetailActivity"
+            android:label="@string/title_new_detail"
+            android:parentActivityName="split.timing.NEWListActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="split.timing.NEWListActivity" />
+        </activity>
+        <activity
+            android:name="split.timing.SelectCompetitionActivity"
+            android:label="@string/title_activity_select_competition"
+            android:parentActivityName="split.timing.Main" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Main" />
+        </activity>
+        <activity
+            android:name="split.timing.AddGroupActivity"
+            android:label="@string/title_activity_add_group"
+            android:parentActivityName="split.timing.SelectCompetitionActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="SelectCompetition" />
+        </activity>
+        <activity
+            android:name="split.timing.GroupActivity"
+            android:label="@string/title_activity_group" >
+        </activity>
+        <activity
+            android:name="split.timing.Timing"
+            android:label="@string/title_activity_timing"
+            android:parentActivityName="split.timing.Main" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="Main" />
+        </activity>
+    </application>
+
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+</manifest>

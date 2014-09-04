@@ -1,0 +1,36 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pagerFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="80dp"
+        tools:context="split.timing.Startgroup_Dialog">
+
+
+        <android.support.v4.view.PagerTitleStrip
+            android:id="@+id/pager_title_strip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:textColor="#fff" />
+
+    </android.support.v4.view.ViewPager>
+
+    <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/startgroup_add_btn"
+        android:layout_width="80dip"
+        android:layout_height="80dip"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_action_accept"
+        app:cb_color="#ffcc0000"
+        app:cb_pressed_ring_width="12dip" />
+
+</FrameLayout>
+<!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/fragment_pager.xml -->

@@ -1,0 +1,255 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_vertical_margin"
+    tools:context=".items.StartgroupEditFragment">
+
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="80dp"
+        android:paddingTop="@dimen/activity_horizontal_margin">
+
+        <LinearLayout
+            android:id="@+id/startgroup_ll"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableRow
+                android:id="@+id/startlist_name_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:id="@+id/startlist_name_text"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:gravity="left"
+                    android:text="Name: "
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/startlist_name_edit"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:hint="New York Marathon"
+                    android:inputType="textPersonName"
+                    android:paddingLeft="8dp"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/startlist_distance_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:gravity="left"
+                    android:text="Distance: "
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/startlist_distance_edit"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:hint="7.5"
+                    android:inputType="number|numberDecimal"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/startlist_interval_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="@dimen/activity_horizontal_margin">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.75"
+                    android:gravity="left"
+                    android:text="Interval: (s) "
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/startlist_interval_edit"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:background="@drawable/edittext_red"
+                    android:digits="0123456789"
+                    android:hint="30"
+                    android:nextFocusDown="@+id/rangestart_edit"
+                    android:nextFocusRight="@+id/rangestart_edit"
+                    android:inputType="numberSigned"
+                    android:textSize="20sp" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    android:id="@+id/addGroup_rangelabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="range:"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:textAlignment="center">
+
+                <EditText
+                    android:id="@+id/rangestart_edit"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:hint="1"
+                    android:nextFocusDown="@+id/rangend_edit"
+                    android:nextFocusRight="@+id/rangend_edit"
+                    android:focusable="true"
+                    android:inputType="number"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/addGroup_betlabe"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text=" - "
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/rangend_edit"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/edittext_red"
+                    android:ems="10"
+                    android:nextFocusLeft="@+id/numberPicker"
+                    android:hint="10"
+                    android:focusable="true"
+                    android:inputType="number"
+                    android:textSize="20sp"
+                    android:textAlignment="gravity" />
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/startlist_time_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:gravity="center_horizontal"
+                android:paddingBottom="@dimen/activity_horizontal_margin">
+
+
+                <NumberPicker
+                    android:id="@+id/numberPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:nextFocusDown="@+id/numberPicker2"
+                    android:nextFocusRight="@+id/numberPicker2"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/timepicker_betlabel1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center_vertical"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:text=":"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <NumberPicker
+                    android:id="@+id/numberPicker2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:nextFocusDown="@+id/numberPicker3"
+                    android:nextFocusRight="@+id/numberPicker3"
+                    android:focusable="true" />
+
+                <TextView
+                    android:id="@+id/timepicker_betlabel2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    android:gravity="left|center_vertical"
+                    android:text=":"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <NumberPicker
+                    android:id="@+id/numberPicker3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:nextFocusDown="@+id/startlist_version_spinner"
+                    android:nextFocusRight="@+id/startlist_version_spinner"
+                    android:focusable="true" />
+
+
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/startlist_version_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Spinner
+                    android:id="@+id/startlist_version_spinner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/spinner_red"
+                    android:focusable="true" />
+
+            </TableRow>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/startlist_circle_btn"
+        android:layout_width="80dip"
+        android:layout_height="80dip"
+        android:layout_gravity="bottom|center_horizontal"
+        android:src="@android:drawable/ic_menu_save"
+        app:cb_color="#CC0000"
+        app:cb_pressed_ring_width="8dip" />
+
+</FrameLayout>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/item_linear_layout"
+        android:layout_height="70dp"
+        android:layout_width="match_parent"
+        android:background="@drawable/card"
+        android:orientation="horizontal"
+        android:showDividers="end"
+        android:divider="@android:color/black">
+
+        <TextView
+            android:id="@+id/title_view"
+            android:layout_height="fill_parent"
+            android:layout_width="0dp"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="#000000"/>
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:scaleType="center"/>
+
+    <split.timing.helpers.ExpandingLayout
+        android:id="@+id/expanding_layout"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/text_view"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textStyle="bold"
+            android:textSize="22sp"
+            android:textColor="#ffffff"
+            android:gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="20dp"/>
+
+    </split.timing.helpers.ExpandingLayout>
+
+
+</LinearLayout>

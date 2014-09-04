@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:animateLayoutChanges="true"
+    android:layout_height="wrap_content">
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:animateLayoutChanges="true"
+        android:background="@drawable/header_card"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/startlist_header_text"
+            android:visibility="gone"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textSize="25sp" />
+
+        <EditText
+            android:layout_width="0dip"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:background="@drawable/edittext_orange"
+            android:ems="10"
+            android:id="@+id/startlist_header_edit"
+            android:inputType="textCapCharacters|text|textCapWords|textCapSentences"
+            android:capitalize="words"
+            android:editable="true"
+            android:lines="1"
+            android:maxLength="100"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textIsSelectable="true" />
+
+        <ImageButton
+            android:layout_width="0dip"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:id="@+id/startlist_header_confirm"
+            android:src="@drawable/ic_action_accept"
+            android:background="@android:color/transparent" />
+
+        <ImageButton
+            android:layout_width="0dip"
+            android:layout_weight="0.25"
+            android:layout_height="wrap_content"
+            android:id="@+id/startlist_header_dismiss"
+            android:src="@drawable/ic_action_cancel"
+            android:background="@android:color/transparent"
+            android:visibility="gone" />
+    </TableRow>
+</LinearLayout>
