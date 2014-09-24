@@ -1,0 +1,67 @@
+package de.novasib.ttsib5.resources.ui.internal;
+
+public class StartlistElement {
+
+	private int id;
+	private int number;
+	private int competitionId;
+	private int startgroupId;
+	private int position;
+	private final boolean jersey;
+
+	public StartlistElement(int id, int number, int competitionId,
+			int startgroupId, int position, boolean jersey) {
+		super();
+		this.id = id;
+		this.number = number;
+		this.competitionId = competitionId;
+		this.startgroupId = startgroupId;
+		this.position = position;
+		this.jersey = jersey;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getNumber() {
+		return number;
+	}
+
+	public void setNumber(int number) {
+		this.number = number;
+	}
+
+	public int getCompetitionId() {
+		return competitionId;
+	}
+
+	public void setCompetitionId(int competitionId) {
+		this.competitionId = competitionId;
+	}
+
+	public int getStartgroupId() {
+		return startgroupId;
+	}
+
+	public void setStartgroupId(int startgroupId) {
+		this.startgroupId = startgroupId;
+	}
+
+	public int getPosition() {
+		return position;
+	}
+
+	public void setPosition(int position) {
+		this.position = position;
+	}
+
+	public boolean isJersey() {
+		return jersey;
+	}
+
+}
