@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +32,7 @@ import split.timing.items.Startgroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link split.timing.StartgroupEditDialog.SaveStartgroupCallback} interface
+ * {@link split.timing.StartgroupEditDialog.Callbacks} interface
  * to handle interaction events.
  */
 public class StartgroupEditDialog extends DialogFragment {
@@ -43,17 +44,15 @@ public class StartgroupEditDialog extends DialogFragment {
     EditText interval;
     TimePicker timePicker;
     EditText start;
-    EditText end;
     NumberPicker hourPicker;
     NumberPicker minutePicker;
     NumberPicker secondPicker;
-
     CircleButton cb;
 
+    Startgroup startgroup;
+
     int startgroupId;
-
-
-    private SaveStartgroupCallback mCallback;
+    boolean exists = false;
 
     public static StartgroupEditDialog newInstance(int startgroup, int competition) {
         StartgroupEditDialog dialog = new StartgroupEditDialog();
@@ -87,7 +86,6 @@ public class StartgroupEditDialog extends DialogFragment {
         spinner = (Spinner) rootView.findViewById(R.id.startlist_version_spinner);
         interval = (EditText) rootView.findViewById(R.id.startlist_interval_edit);
         start = (EditText) rootView.findViewById(R.id.rangestart_edit);
-        end = (EditText) rootView.findViewById(R.id.rangend_edit);
         interval_row = (TableRow) rootView.findViewById(R.id.startlist_interval_row);
         cb = (CircleButton) rootView.findViewById(R.id.startlist_circle_btn);
 
@@ -143,25 +141,26 @@ public class StartgroupEditDialog extends DialogFragment {
         cb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                saveStartgroup();
-                dismiss();
-
+                if (saveStartgroup()) {
+                    dismiss();
+                }
             }
         });
 
 
-        if (startgroupId > 0) {
+        if (startgroupId > -1) {
             DBHelper dbHelper = new DBHelper();
             Cursor cursor = dbHelper.select("SELECT * FROM Startgroup WHERE _id=" + startgroupId);
+            cursor.moveToFirst();
 
             name.setText(cursor.getString(1));
             distance.setText(cursor.getDouble(5) + "");
             hourPicker.setValue(cursor.getInt(2));
             minutePicker.setValue(cursor.getInt(3));
-            start.setText(cursor.getInt(7) + "");
-            interval.setText(cursor.getInt(6));
-            spinner.setSelection(cursor.getInt(4), true);
+            secondPicker.setValue(cursor.getInt(4));
+            start.setText(cursor.getInt(8) + "");
+            interval.setText("" + cursor.getInt(7));
+            spinner.setSelection(cursor.getInt(5), true);
 
             cursor.close();
             dbHelper.close();
@@ -172,23 +171,25 @@ public class StartgroupEditDialog extends DialogFragment {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 
 
-                    ArrayList<Integer> list = new ArrayList<Integer>();
+                ArrayList<Integer> list = new ArrayList<Integer>();
 
-                    int counter = 0;
-                    int time = 0;
-                    int intervalTime = Integer.parseInt(interval.getText().toString());
-                    while (counter * intervalTime > 60) {
-                        list.add(counter * intervalTime);
-                        counter++;
-                    }
+                int counter = 0;
+                int time = 0;
+                int intervalTime = Integer.parseInt(v.getText().toString());
+                while (counter * intervalTime > 60) {
+                    list.add(counter * intervalTime);
+                    counter++;
+                }
 
-                    secondPicker.setDisplayedValues(list.toArray(new String[list.size()]));
+                Log.e("##", (v.getText().toString()));
+
+                secondPicker.setDisplayedValues(list.toArray(new String[list.size()]));
                 return false;
             }
         });
 
 
-        if(intervals.length == 0){
+        if (intervals.length == 0) {
             secondPicker.setDisplayedValues(new String[]{"0", "30"});
         }
 
@@ -200,7 +201,7 @@ public class StartgroupEditDialog extends DialogFragment {
         return rootView;
     }
 
-    private void saveStartgroup() {
+    private boolean saveStartgroup() {
         int competitionId = getArguments().getInt("competitionId");
         if (distance.getText().toString().equals("")) {
             distance.setText("0");
@@ -208,10 +209,6 @@ public class StartgroupEditDialog extends DialogFragment {
 
         if (start.getText().toString().equals("")) {
             start.setText("1");
-        }
-
-        if (end.getText().toString().equals("")) {
-            end.setText("10");
         }
 
         if (interval.getText().toString().equals("")) {
@@ -222,31 +219,54 @@ public class StartgroupEditDialog extends DialogFragment {
         if (!name.getText().toString().equals("")) {
             DBHelper db = new DBHelper();
 
-            if (startgroupId > 0) {
-                db.insert(new Startgroup(0, name.getText().toString(), timePicker.getCurrentHour(), timePicker.getCurrentMinute(), spinner.getSelectedItemPosition(), Float.parseFloat(distance.getText().toString()), Integer.parseInt(interval.getText().toString()), Integer.parseInt(start.getText().toString())));
+            startgroup = new Startgroup(0, name.getText().toString(), hourPicker.getValue(), minutePicker.getValue(),secondPicker.getValue(), spinner.getSelectedItemPosition(), Float.parseFloat(distance.getText().toString()), Integer.parseInt(interval.getText().toString()), Integer.parseInt(start.getText().toString()),-1);
+
+            if (startgroupId < 0) {
+                exists = false;
+
+                db.insert(startgroup);
 
                 Cursor c = db.select("SELECT * FROM Startgroup");
                 c.moveToLast();
                 startgroupId = c.getInt(0);
+
+                c = db.select("SELECT * FROM Competitionmember WHERE competitionId=" + competitionId);
+
+                ContentValues values = new ContentValues();
+                values.put("competitionId", competitionId);
+                values.put("startgroupId", startgroupId);
+                values.put("position", c.getCount());
+                db.insert("Competitionmember", values);
+
                 c.close();
 
-
             } else {
+                exists = true;
+
                 ContentValues values = new ContentValues();
-                values.put("name", name.getText().toString());
-                values.put("mode", spinner.getSelectedItemId());
-                values.put("distance", Float.parseFloat(distance.getText().toString()));
-                values.put("interval", Integer.parseInt(interval.getText().toString()));
-                values.put("starthour", hourPicker.getValue());
-                values.put("startminute", minutePicker.getValue());
-                values.put("startnum", Integer.parseInt(start.getText().toString()));
+                values.put("name", startgroup.getName());
+                values.put("mode", startgroup.getMode());
+                values.put("distance", startgroup.getDistance());
+                values.put("interval", startgroup.getInterval());
+                values.put("starthour", startgroup.getStartHour());
+                values.put("startminute", startgroup.getStartMinute());
+                values.put("startsecond",startgroup.getStartSecond());
+                values.put("startnum", startgroup.getStartNum());
+                values.put("jerseynum",startgroup.getJerseyNum());
                 db.update("Startgroup", values, "_id=" + startgroupId);
+
             }
 
+            startgroup.setId(startgroupId);
+            succes = true;
+            mCallbacks.saveStartgroup(startgroup);
 
         } else {
             Toast.makeText(getActivity(), "A name would be helpful, thanks", Toast.LENGTH_SHORT).show();
+            succes = false;
         }
+
+        return succes;
     }
 
     @Override
@@ -271,22 +291,30 @@ public class StartgroupEditDialog extends DialogFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallback = (SaveStartgroupCallback) activity;
+            mCallbacks = (Callbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement Callbacks");
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mCallback = null;
+        mCallbacks = null;
     }
 
+    private Callbacks mCallbacks = sCallbacks;
 
-    public interface SaveStartgroupCallback {
 
+    public interface Callbacks {
+        public void saveStartgroup(Startgroup s);
     }
 
+    private static Callbacks sCallbacks = new Callbacks() {
+        @Override
+        public void saveStartgroup(Startgroup s) {
+
+        }
+    };
 }

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -71,6 +72,8 @@ public class NEWListFragment extends Fragment implements
         public void onResultSelected(int id);
 
         public void onCompetitionSelected(int id);
+
+        public void callCompetitionEditDialog(int competition);
     }
 
     /**
@@ -99,6 +102,11 @@ public class NEWListFragment extends Fragment implements
 
         @Override
         public void onCompetitionSelected(int id) {
+
+        }
+
+        @Override
+        public void callCompetitionEditDialog(int competition) {
 
         }
     };
@@ -142,8 +150,12 @@ public class NEWListFragment extends Fragment implements
         order = (TextView) rootView.findViewById(R.id.list_order);
         CircleButton cb = (CircleButton) rootView.findViewById(R.id.list_circle_btn);
 
-
-        DBHelper db = new DBHelper();
+        DBHelper db =null;
+        try {
+            db = new DBHelper();
+        }catch(Exception sql){
+            Log.e("SQLiteCantOpenDatabaseException","NEWListFragement Line: 158");
+        }
 
         if (getArguments() != null) {
             mArgs = getArguments();
@@ -266,7 +278,7 @@ public class NEWListFragment extends Fragment implements
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mCallbacks.onCompetitionSelected(-1);
+                    mCallbacks.callCompetitionEditDialog(-1);
                 }
             });
 

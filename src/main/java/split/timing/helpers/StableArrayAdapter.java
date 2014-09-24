@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import split.timing.R;
+import split.timing.items.Competition;
 import split.timing.items.Sportsmen;
 import split.timing.items.Startgroup;
 
@@ -42,14 +43,31 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
     ArrayList contentList;
     HashMap<Object, Integer> mIdMap = new HashMap<Object, Integer>();
 
+    Startgroup startgroup;
+    Competition competition;
+
+    int saveMinute;
     int mode;
 
-    public StableArrayAdapter(Context context, int textViewResourceId, ArrayList objects, int mode) {
+    public StableArrayAdapter(Context context, int textViewResourceId, Object parent, int mode) {
         super(context, textViewResourceId);
+
+        ArrayList objects = new ArrayList();
+
+        if (parent instanceof Competition) {
+            competition = (Competition) parent;
+            objects = competition.getStartgroups();
+        }
+
+        if (parent instanceof Startgroup) {
+            startgroup = (Startgroup) parent;
+            objects = startgroup.getSportsmens();
+        }
+
         for (int i = 0; i < objects.size(); ++i) {
-            if(mode == 0){
+            if (mode == 0) {
                 mIdMap.put(objects.get(i).toString(), i);
-            }else{
+            } else {
                 mIdMap.put(objects.get(i).toString(), i);
             }
 
@@ -75,6 +93,7 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
         TextView year = (TextView) convertView.findViewById(R.id.startlist_element_num);
         TextView age = (TextView) convertView.findViewById(R.id.startlist_element_pos);
         TextView name = (TextView) convertView.findViewById(R.id.startlist_element_name);
+        TextView time = (TextView) convertView.findViewById(R.id.startlist_element_time);
         TextView club = (TextView) convertView.findViewById(R.id.startlist_element_info);
         TextView fed = (TextView) convertView.findViewById(R.id.startlist_element_extra);
         TableRow tab = (TableRow) convertView.findViewById(R.id.startlist_element_numTableRow);
@@ -86,18 +105,78 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
                 club.setText(s.getClub());
                 fed.setText(s.getFederation());
                 shape.setColor(ColorSetter.newInstance(0));
-                year.setText("" + (position + 1));
+                age.setText("" + (position + 1));
+                year.setText("" + (startgroup.getStartNum() + position));
+
+                String timetext;
+
+                int tmp = startgroup.getInterval() * contentList.indexOf(element);
+
+                int hour = (tmp / 3600);
+                int minute = (tmp % 3600) / 60;
+                int second = +tmp % 60;
+
+                if (contentList.indexOf(element) == 0) {
+                    timetext = startgroup.getStartHour() + ":";
+
+                    if (startgroup.getStartMinute() < 10) {
+                        timetext = timetext + "0" + startgroup.getStartMinute() + ":";
+                    } else {
+                        timetext = timetext + startgroup.getStartMinute() + ":";
+                    }
+
+                    if (startgroup.getStartSecond() < 10) {
+                        timetext = timetext + "0" + startgroup.getStartSecond();
+                    } else {
+                        timetext = timetext + startgroup.getStartSecond() + "";
+                    }
+                } else {
+
+
+                    if((startgroup.getStartNum()+position)%5 == 0){
+                        hour=hour+startgroup.getStartHour();
+                        minute = minute+startgroup.getStartMinute();
+                        second = second+startgroup.getStartSecond();
+                        timetext = hour+":";
+                    }else{
+                        if(hour > 0){
+                            timetext = "+"+hour+":";
+                        }else {
+                            timetext ="+";
+                        }
+                    }
+
+
+
+
+                    if (minute < 10) {
+                        timetext = timetext + "0" +minute + ":";
+                    } else {
+                        timetext = timetext + minute + ":";
+                    }
+
+                    if (second < 10) {
+                        timetext = timetext + "0" + second;
+                    } else {
+                        timetext = timetext + second + "";
+                    }
+                }
+
+
+                time.setText(timetext);
+
+
                 break;
             case 1:
                 Startgroup list = (Startgroup) element;
 
                 DBHelper db = new DBHelper();
-                Cursor cursor = db.select("SELECT * FROM Startgroupmember WHERE startgroupId="+ list.getId());
+                Cursor cursor = db.select("SELECT * FROM Startlist WHERE startgroupId=" + list.getId());
 
-                year.setText(""+cursor.getCount());
+                year.setText("" + cursor.getCount());
                 year.setTextColor(ColorSetter.newInstance(11));
 
-                age.setText(""+(position+1));
+                age.setText("" + (position + 1));
 
                 cursor.close();
                 db.close();
@@ -105,10 +184,6 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
                 name.setText(list.getName());
                 String m = "" + list.getStartMinute();
                 String h = "" + list.getStartHour();
-
-                if (list.getStartHour() < 10) {
-                    h = "0" + list.getStartHour();
-                }
 
                 if (list.getStartMinute() < 10) {
                     m = "0" + list.getStartMinute();

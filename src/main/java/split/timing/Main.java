@@ -23,7 +23,9 @@ import java.util.HashMap;
 
 import split.timing.helpers.DBHelper;
 import split.timing.helpers.DialogArrayAdapter;
+import split.timing.items.Competition;
 import split.timing.items.Groupmember;
+import split.timing.items.Startgroup;
 
 public class Main extends FragmentActivity implements
         NavigationDrawerFragment.NavigationDrawerCallbacks,
@@ -31,11 +33,13 @@ public class Main extends FragmentActivity implements
         SportsFragment.Callbacks,
         StartgroupAddDialog.OnDialogInteractionListener,
         GroupFragment.Callbacks,
-        CompetitionSetupFragment.Callbacks,
         DialogArrayAdapter.Callbacks,
         StartgroupAddDialogPager.Callbacks,
-StartlistAddEmptyPositionsFragment.Callbacks,
-        StartgroupEditDialog.SaveStartgroupCallback{
+        StartlistAddEmptyPositionsFragment.Callbacks,
+        CompetitionFragment.Callbacks,
+        StartgroupFragment.Callbacks,
+        CompetitionEditDialog.Callbacks,
+        StartgroupEditDialog.Callbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -132,7 +136,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
                 break;
 
             case 4:
-                Intent in = new Intent(this,Timing.class);
+                Intent in = new Intent(this, Timing.class);
                 startActivity(in);
                 break;
         }
@@ -220,7 +224,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
 
     @Override
     public void onListSelected(int id) {
-        CompetitionSetupFragment frag = new CompetitionSetupFragment();
+        CompetitionFragment frag = new CompetitionFragment();
         Bundle args = new Bundle();
         args.putInt("startgroupId", id);
         frag.setArguments(args);
@@ -236,7 +240,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
     public void onStartgroupSelected(int id, int competitionId) {
         this.compId = competitionId;
 
-        CompetitionSetupFragment frag = new CompetitionSetupFragment();
+        StartgroupFragment frag = new StartgroupFragment();
         Bundle args = new Bundle();
         args.putInt("startgroupId", id);
         args.putInt("competitionId", competitionId);
@@ -244,7 +248,8 @@ StartlistAddEmptyPositionsFragment.Callbacks,
         getSupportFragmentManager()
                 .beginTransaction()
                 .addToBackStack(null)
-                .replace(R.id.container, frag)
+                .setCustomAnimations(R.anim.pop_in, R.anim.pop_out)
+                .replace(R.id.container, frag,"StartgroupFragment")
                 .commit();
 
     }
@@ -256,7 +261,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
 
     @Override
     public void onCompetitionSelected(int id) {
-        CompetitionSetupFragment fragm = new CompetitionSetupFragment();
+        CompetitionFragment fragm = new CompetitionFragment();
         Bundle args = new Bundle();
         args.putInt("competitionId", id);
         fragm.setArguments(args);
@@ -264,7 +269,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
                 .beginTransaction()
                 .setCustomAnimations(R.anim.pop_in, R.anim.pop_out)
                 .addToBackStack(null)
-                .replace(R.id.container, fragm)
+                .replace(R.id.container, fragm,"CompetitionFragment")
                 .commit();
     }
 
@@ -339,7 +344,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
         }
         db.close();
 
-        CompetitionSetupFragment group = new CompetitionSetupFragment();
+        CompetitionFragment group = new CompetitionFragment();
         Bundle args = new Bundle();
         args.putInt("competitionId", competitionId);
         group.setArguments(args);
@@ -356,20 +361,25 @@ StartlistAddEmptyPositionsFragment.Callbacks,
     ArrayList<Integer> addIds;
 
     @Override
+    public void onSportsmenSelected(int competitionId, int startgroup, int sportsmen) {
+
+    }
+
+    @Override
     public void callStartgroupAddDialog(ArrayList<Integer> ids, int startgroup) {
         mStackLevel++;
-        addIds=ids;
+        addIds = ids;
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
 
-        if(prev!=null){
+        if (prev != null) {
             ft.remove(prev);
         }
         ft.addToBackStack(null);
 
         StartgroupAddDialogPager newFragment = StartgroupAddDialogPager.newInstance(ids, startgroup);
-        newFragment.show(ft,"dialog");
+        newFragment.show(ft, "dialog");
     }
 
     @Override
@@ -378,15 +388,30 @@ StartlistAddEmptyPositionsFragment.Callbacks,
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment previous = getSupportFragmentManager().findFragmentByTag("editDialog");
 
-        if(previous != null){
+        if (previous != null) {
             ft.remove(previous);
         }
 
         ft.addToBackStack(null);
 
-        StartgroupEditDialog newDialog = StartgroupEditDialog.newInstance(startgroup,competition);
-        newDialog.show(ft,"editDialog");
+        StartgroupEditDialog newDialog = StartgroupEditDialog.newInstance(startgroup, competition);
+        newDialog.show(ft, "editDialog");
 
+    }
+
+    @Override
+    public void callCompetitionEditDialog(int competition) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment previous = getSupportFragmentManager().findFragmentByTag("CompetitionEditDialog");
+
+        if (previous != null) {
+            ft.remove(previous);
+        }
+
+        ft.addToBackStack(null);
+
+        CompetitionEditDialog newDialog = CompetitionEditDialog.newInstance(competition);
+        newDialog.show(ft, "editDialog");
     }
 
     @Override
@@ -399,7 +424,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
         if (mId.containsValue(id)) {
             mId.remove(id);
         } else {
-            mId.put(id,id);
+            mId.put(id, id);
         }
 
         dialogMode = mode;
@@ -417,7 +442,7 @@ StartlistAddEmptyPositionsFragment.Callbacks,
 
         switch (dialogMode) {
             case 0:
-                for(int j: ids){
+                for (int j : ids) {
                     addIds.add(j);
                 }
                 break;
@@ -432,18 +457,18 @@ StartlistAddEmptyPositionsFragment.Callbacks,
                 }
                 break;
             case 2:
-                for(int n = 1; n <= additional;n++){
-                    addIds.add(-1);
+                for (int n = 1; n <= additional; n++) {
+                    addIds.add(0);
                 }
                 break;
         }
 
         db.close();
 
-        CompetitionSetupFragment frag = new CompetitionSetupFragment();
+        StartgroupFragment frag = new StartgroupFragment();
         Bundle args = new Bundle();
         args.putInt("startgroupId", startgroupId);
-        args.putInt("competitionId",compId);
+        args.putInt("competitionId", compId);
         args.putIntegerArrayList("added", addIds);
         frag.setArguments(args);
         getSupportFragmentManager().popBackStack();
@@ -455,12 +480,46 @@ StartlistAddEmptyPositionsFragment.Callbacks,
                 .commit();
     }
 
-    int additional=0;
+    int additional = 0;
 
     @Override
     public void onValueChanged(int value) {
         dialogMode = 2;
-        additional=value;
+        additional = value;
 
+    }
+
+    @Override
+    public void saveCompetition(Competition c) {
+
+
+        CompetitionFragment frag = (CompetitionFragment)getSupportFragmentManager().findFragmentByTag("CompetitionFragment");
+
+        if(frag != null){
+            frag.refreshCompetitionData(c);
+        }else{
+            frag = new CompetitionFragment();
+            Bundle args = new Bundle();
+            args.putInt("competitionId", c.getId());
+            frag.setArguments(args);
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container, frag)
+                    .commit();
+        }
+
+    }
+
+    @Override
+    public void saveStartgroup(Startgroup s) {
+       StartgroupFragment frag = (StartgroupFragment)getSupportFragmentManager().findFragmentByTag("StartgroupFragment");
+
+        if(frag != null){
+            frag.refreshStartgroupData(s);
+        }else {
+            CompetitionFragment fragment = (CompetitionFragment)getSupportFragmentManager().findFragmentByTag("CompetitionFragment");
+            fragment.addNewStartgroup(s);
+        }
     }
 }

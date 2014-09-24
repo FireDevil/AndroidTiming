@@ -1,5 +1,6 @@
 package split.timing.items;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -12,10 +13,7 @@ public class Competition {
     private String date;
     private String location;
     private boolean finished;
-
-    public void Startlist(){
-
-    }
+    private ArrayList<Startgroup> startgroups = new ArrayList<Startgroup>();
 
     public Competition(){
     }
@@ -82,6 +80,10 @@ public class Competition {
     public void setFinished(boolean finished) {
         this.finished = finished;
     }
+
+    public ArrayList<Startgroup> getStartgroups() {return startgroups;}
+
+    public void setStartgroups(ArrayList<Startgroup> startgroups) {this.startgroups = startgroups; }
 
     @Override
     public String toString(){

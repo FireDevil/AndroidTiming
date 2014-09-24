@@ -536,7 +536,7 @@ private final static TypeEvaluator<Rect> sBoundEvaluator = new TypeEvaluator<Rec
         return false;
     }
 
-    public void setItemList(ArrayList<Object> object) {
+    public void setItemList(ArrayList object) {
         this.objects = object;
     }
 

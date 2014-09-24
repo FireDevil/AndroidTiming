@@ -27,7 +27,7 @@ public class SelectCompetitionActivity extends Activity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_competitionsetup);
+        setContentView(R.layout.fragment_competition);
         UndoBarController mUndoBarController;
 
         final DynamicListView lv = (DynamicListView) findViewById(R.id.listview);

@@ -31,11 +31,14 @@ import split.timing.helpers.DynamicListView;
 import split.timing.helpers.StableArrayAdapter;
 import split.timing.helpers.SwipeToDismissListener;
 import split.timing.helpers.UndoBarController;
-import split.timing.items.Competition;
+import split.timing.items.Sportsmen;
 import split.timing.items.Startgroup;
+import split.timing.items.Startlist;
 
-
-public class CompetitionFragment extends Fragment implements
+/**
+ * Created by Antec on 06.09.2014.
+ */
+public class StartgroupFragment  extends Fragment implements
         UndoBarController.UndoListener,
         DynamicListView.SwapListener {
 
@@ -44,7 +47,7 @@ public class CompetitionFragment extends Fragment implements
     @Override
     public void swapElements(int first, int second) {
 
-        Startgroup temp = backUpList.get(first);
+        Sportsmen temp = backUpList.get(first);
         backUpList.set(first, backUpList.get(second));
         backUpList.set(second, temp);
 
@@ -52,7 +55,6 @@ public class CompetitionFragment extends Fragment implements
 
     @Override
     public void swapFinished() {
-
 
 
     }
@@ -63,19 +65,14 @@ public class CompetitionFragment extends Fragment implements
      * selections.
      */
     public interface Callbacks {
+        public void onSportsmenSelected(int competitionId, int startgroup, int sportsmen);
+
         public void callStartgroupAddDialog(ArrayList<Integer> ids, int startgroup);
 
         public void callStartgroupEditDialog(int startgroup, int competition);
 
-        public void callCompetitionEditDialog(int competition);
-
-        public void onStartgroupSelected(int startgroup, int competitionId);
-
-        public void onCompetitionSelected(int id);
-
         public void backToList();
 
-        public void showStartlist(int competitionId);
     }
 
     /**
@@ -84,6 +81,10 @@ public class CompetitionFragment extends Fragment implements
      */
     private static Callbacks sCallbacks = new Callbacks() {
 
+        @Override
+        public void onSportsmenSelected(int competitionId, int startgroup, int sportsmen) {
+
+        }
 
         @Override
         public void callStartgroupAddDialog(ArrayList<Integer> ids, int startgroup) {
@@ -96,33 +97,13 @@ public class CompetitionFragment extends Fragment implements
         }
 
         @Override
-        public void callCompetitionEditDialog(int competition) {
-
-        }
-
-        @Override
-        public void onStartgroupSelected(int startgroup, int competitionId) {
-
-        }
-
-        @Override
-        public void onCompetitionSelected(int id) {
-
-        }
-
-        @Override
         public void backToList() {
-
-        }
-
-        @Override
-        public void showStartlist(int competitionId) {
 
         }
 
     };
 
-    public CompetitionFragment() {
+    public StartgroupFragment() {
     }
 
     DynamicListView lv;
@@ -130,12 +111,12 @@ public class CompetitionFragment extends Fragment implements
 
     CircleButton add;
 
-    ArrayList<Startgroup> mData;
+    ArrayList<Sportsmen> mData;
     StableArrayAdapter adapter;
 
     int backUpPosition = -1;
     int backId = -1;
-    ArrayList<Startgroup> backUpList;
+    ArrayList<Sportsmen> backUpList;
 
     HashMap<Integer, Integer> ids;
 
@@ -146,13 +127,13 @@ public class CompetitionFragment extends Fragment implements
     Cursor c;
     int competitionId;
     int startgroupId;
-    Competition co = new Competition();
     Startgroup startgroup = new Startgroup();
 
     boolean detailsOpened = true;
     boolean preExisting = false;
 
     int mode = 0;
+
     Controller controller = Controller.getInstance();
 
     @Override
@@ -165,75 +146,124 @@ public class CompetitionFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_competition, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_startgroup, container, false);
         lv = (DynamicListView) rootView.findViewById(R.id.listview);
         lv.init(this);
-        final CircleButton cb = (CircleButton) rootView.findViewById(R.id.competition_circle_edit);
-        add = (CircleButton) rootView.findViewById(R.id.competition_circle_btn);
+        final CircleButton cb = (CircleButton) rootView.findViewById(R.id.startgroup_circle_edit);
+        add = (CircleButton) rootView.findViewById(R.id.startgroup_circle_btn);
 
-        LinearLayout ll = (LinearLayout)rootView.findViewById(R.id.competition_ll);
+        LinearLayout ll = (LinearLayout)rootView.findViewById(R.id.startgroup_ll);
         LayerDrawable bgDrawable = (LayerDrawable)ll.getBackground();
         GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.card_border);
-        shape.setColor(ColorSetter.newInstance(3));
+        shape.setColor(ColorSetter.newInstance(2));
 
-        nameLabel = (TextView) rootView.findViewById(R.id.competition_label);
+        nameLabel = (TextView) rootView.findViewById(R.id.startgroup_label);
 
         if (getArguments() != null) {
+            DBHelper db = new DBHelper();
 
-
-            mData = new ArrayList<Startgroup>();
-            backUpList = new ArrayList<Startgroup>();
+            mData = new ArrayList<Sportsmen>();
+            backUpList = new ArrayList<Sportsmen>();
             ids = new HashMap<Integer, Integer>();
 
             competitionId = getArguments().getInt("competitionId");
+            startgroupId = getArguments().getInt("startgroupId");
             mode = 1;
 
-            cb.setColor(ColorSetter.newInstance(3));
-            add.setColor(ColorSetter.newInstance(2));
+            cb.setColor(ColorSetter.newInstance(2));
+            add.setColor(ColorSetter.newInstance(0));
             add.setImageResource(R.drawable.ic_action_new);
 
+            if (startgroupId > -1) {
 
-            if (competitionId > -1) {
-                DBHelper db = new DBHelper();
-                c = db.select("SELECT * FROM Competitionmember JOIN Startgroup WHERE startgroupId=Startgroup._id AND competitionId =" + competitionId);
+                Cursor comp = db.select("SELECT * FROM Startgroup WHERE _id=" + startgroupId);
+                comp.moveToFirst();
 
-                if (c.getCount() > 0) {
+                startgroup = new Startgroup(comp.getInt(0), comp.getString(1), comp.getInt(2), comp.getInt(3), comp.getInt(4),comp.getInt(5), comp.getFloat(6), comp.getInt(7), comp.getInt(8),comp.getInt(9));
 
-                    int pos = 0;
+                comp.close();
 
-                    while (c.moveToNext()) {
-                        mData.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12),c.getInt(13)));
-                        backUpList.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12),c.getInt(13)));
-                        ids.put(pos, c.getInt(4));
+                c = db.select("SELECT * FROM Startlist JOIN Sportsmen WHERE Startlist.sportsmenId = Sportsmen._id AND Startlist.startgroupId="+startgroupId);
+                c.moveToLast();
+                int pos = 0;
+
+                if(getArguments().containsKey("added")){
+
+                    int number;
+
+                    if(c.getCount() == 0){
+                        number = startgroup.getStartNum()-1;
+                    }else{
+                        number = c.getInt(1);
+                    }
+
+                    for(int id : getArguments().getIntegerArrayList("added")){
+
+                        number = number+pos+1;
+
+                        if(number != startgroup.getStartNum()-1 && controller.getStartNumbers().contains(number)){
+                            number = 100192;
+                        }
+
+                        ContentValues values = new ContentValues();
+                        values.put("sportsmenId",id);
+                        values.put("startgroupId",startgroupId);
+                        values.put("competitionId",competitionId);
+                        values.put("jersey",false);
+                        values.put("number",number);
+                        values.put("startposition",c.getCount()+pos);
+                        db.insert("Startlist",values);
+
                         pos++;
                     }
+
+                    c.close();
+                }
+
+                c = db.select("SELECT * FROM Startlist JOIN Sportsmen WHERE Startlist.sportsmenId = Sportsmen._id AND Startlist.startgroupId="+startgroupId);
+                if (c.getCount() > 0) {
+                    pos = 0;
+
+                    while (c.moveToNext()) {
+                        mData.add(new Sportsmen(c.getInt(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getInt(12), c.getString(13), c.getString(14)));
+                        backUpList.add(new Sportsmen(c.getInt(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getInt(12), c.getString(13), c.getString(14)));
+                        ids.put(pos, c.getInt(7));
+                        pos++;
+                    }
+
+                    if(startgroup.getJerseyNum() > -1 && (startgroup.getStartNum()+pos) < startgroup.getJerseyNum()){
+                        startgroup.setJerseyNum(-1);
+                    }
+
+                    startgroup.setSportsmens(mData);
+
                 }
 
                 c.close();
 
-                Cursor comp = db.select("SELECT * FROM Competition WHERE _id=" + competitionId);
-                comp.moveToFirst();
-
-                co = new Competition(comp.getInt(0), comp.getString(1), comp.getString(2), comp.getString(3), comp.getInt(4));
-                co.setStartgroups(mData);
-
-                comp.close();
-
-                nameLabel.setText(co.getName());
+                nameLabel.setText(startgroup.getName());
 
                 add.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mCallbacks.callStartgroupEditDialog(-1,competitionId);
+                        ArrayList tmp = new ArrayList<Integer>();
+
+                        for(int key : ids.keySet()){
+                            tmp.add(ids.get(key));
+                        }
+                        tmp.add(0);
+
+                        mCallbacks.callStartgroupAddDialog(tmp, startgroupId);
                     }
                 });
 
-                db.close();
+
             }
+            db.close();
         }
 
 
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, co, mode);
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, startgroup, 0);
         undoBarController = new UndoBarController(rootView.findViewById(R.id.undobar), this);
 
 
@@ -291,18 +321,15 @@ public class CompetitionFragment extends Fragment implements
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                switch (mode) {
-                    case 1:
-                        mCallbacks.onStartgroupSelected(mData.get(position).getId(), competitionId);
-                        break;
-                }
+                mCallbacks.onSportsmenSelected(competitionId,startgroupId,((Sportsmen)mData.get(position)).getId());
             }
         });
 
         cb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mCallbacks.callCompetitionEditDialog(competitionId);
+                mCallbacks.callStartgroupEditDialog(startgroupId,competitionId);
+
             }
         });
 
@@ -313,13 +340,13 @@ public class CompetitionFragment extends Fragment implements
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            // mListener = (OnDialogInteractionListener) activity;
+            mCallbacks = (Callbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnDialogInteractionListener");
+                    + " must implement Callbacks");
         }
 
-        mCallbacks = (Callbacks) activity;
+
     }
 
     @Override
@@ -355,74 +382,71 @@ public class CompetitionFragment extends Fragment implements
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.competition_save_btn:
-                //getFragmentManager().popBackStack();
-                //mCallbacks.onCompetitionSelected(competitionId);
-                break;
-            case R.id.competition_clear_btn:
-
-                break;
-            case R.id.competition_startlist:
-
-                break;
-        }
-
         return true;
     }
 
-    public void addNewStartgroup(Startgroup s){
+    public void addNewSportsmen(){
 
-        mData.add(s);
-        backUpList.add(s);
-        ids.put(mData.size(),s.getId());
-
-
-        co.setStartgroups(mData);
-
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, co, mode);
-        lv.setAdapter(adapter);
     }
 
-    public void refreshCompetitionData(Competition c){
-        co = c;
-        co.setStartgroups(mData);
-        competitionId = c.getId();
-        nameLabel.setText(c.getName());
+    public void refreshStartgroupData(Startgroup s){
+        startgroup = s;
+        startgroup.setSportsmens(mData);
+        startgroupId = s.getId();
+        nameLabel.setText(s.getName());
+
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, startgroup, 0);
+        lv.setAdapter(adapter);
+
+        adapter.notifyDataSetInvalidated();
+
     }
 
     private void save(){
+        ArrayList<Startlist> startlist = new ArrayList<Startlist>();
+
         DBHelper db = new DBHelper();
-        db.sqlCommand("DELETE FROM Competitionmember WHERE competitionId="+competitionId);
+        db.sqlCommand("DELETE FROM Startlist WHERE startgroupId="+startgroupId);
 
         ContentValues values;
         int position=0;
+        boolean jersey = false;
 
-        for(Startgroup s : mData){
+        for(Sportsmen s : mData){
+
+
+            if(startgroup.getStartNum()+position == startgroup.getJerseyNum()){
+                jersey = true;
+            }else{
+                jersey = false;
+            }
+
+
             values = new ContentValues();
-            values.put("position",position);
-            values.put("startgroupId",s.getId());
+            values.put("sportsmenId",s.getId());
+            values.put("startgroupId",startgroupId);
             values.put("competitionId",competitionId);
-            db.insert("Competitionmember",values);
+            values.put("jersey",jersey);
+            values.put("number", startgroup.getStartNum()+position);
+            values.put("startposition",position);
+            db.insert("Startlist",values);
+
+            startlist.add(new Startlist(s.getId(),startgroup.getStartNum()+position,jersey,competitionId,startgroupId,s.getId(),position));
 
             position++;
         }
 
-        co.setStartgroups(mData);
-
-        controller.clearData();
-        controller.setCompetition(co);
-        controller.setSelectedCompetition(co.getId());
-        controller.setStartgroups(co.getStartgroups());
-
+        startgroup.setSportsmens(mData);
+        controller.setSelectedStartgroup(startgroup.getId());
+        controller.setSportsmen(startgroup.getSportsmens());
+        controller.setStartlistElements(startlist);
         db.close();
     }
 
     private void deleteOnDismiss() {
         if (backUpPosition >= 0 && dismissed) {
             DBHelper db = new DBHelper();
-            db.sqlCommand("DELETE FROM Competitionmember WHERE startgroupId=" + backUpList.get(backUpPosition).getId() + " AND competitionId=" + competitionId);
-            db.sqlCommand("DELETE FROM Startlist WHERE startgroupId=" + backUpList.get(backUpPosition).getId() + " AND competitionId=" + competitionId);
+            db.sqlCommand("DELETE FROM Startlist WHERE sportsmenId=" + ((Sportsmen) backUpList.get(backUpPosition)).getId() + " AND startgroupId=" + startgroupId);
 
             dismissed = false;
             backUpList.remove(backUpPosition);

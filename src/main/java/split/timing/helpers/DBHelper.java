@@ -90,10 +90,12 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("name",sg.getName());
         values.put("starthour",sg.getStartHour());
         values.put("startminute",sg.getStartMinute());
+        values.put("startsecond",sg.getStartSecond());
         values.put("mode",sg.getMode());
         values.put("distance",sg.getDistance());
         values.put("interval",sg.getInterval());
         values.put("startnum",sg.getStartNum());
+        values.put("jerseynum",sg.getJerseyNum());
         myDataBase.insert("Startgroup",null,values);
 
     }
