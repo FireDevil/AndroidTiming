@@ -134,6 +134,8 @@ public class NEWListFragment extends Fragment implements
 
     String[] listModeTable = new String[]{"Sportsmen", "Groups", "Startgroup","Competition"};
     String[] sortList;
+    
+    Controller controller = Controller.newInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -360,9 +362,8 @@ public class NEWListFragment extends Fragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-
        deleteOnDismiss();
-
+        controller.setCompetitions(mData);
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
     }
@@ -371,6 +372,7 @@ public class NEWListFragment extends Fragment implements
     public void onPause() {
         super.onPause();
         deleteOnDismiss();
+        controller.setCompetitions(mData);
     }
 
 
