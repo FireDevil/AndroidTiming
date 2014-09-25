@@ -10,12 +10,13 @@ import split.timing.items.Startlist;
 
 public class Controller {
 
-    private Competition competition;
+    	private HashMap<Competition> competitions;
 	private ArrayList<Startgroup> startgroups;
-    private ArrayList<Integer> startNumbers;
+    	private ArrayList<Integer> startNumbers;
 	private ArrayList<Sportsmen> sportsmen;
 	private HashMap <Integer,Startlist> startlistElements;
 	private HashMap <Integer,Sportsmen> numbers;
+	private HashMap <Integer,Startgroup> groups;
 	private int selectedCompetition = -1;
 	private int selectedStartgroup = -1;
 
@@ -32,7 +33,9 @@ public class Controller {
 		sportsmen = new ArrayList<Sportsmen>();
 		startlistElements = new HashMap<Integer,Startlist>();
 		numbers = new HashMap<Integer,Sportsmen>();
-        competition = null;
+        	startNumbers = new ArrayList<Integer>();
+        	groups = new HashMap<Integer,Startgroup>();
+        	competitions = new HashMap<Integer,Competition>();
 	}
 
 	// Eine nicht synchronisierte Zugriffsmethode auf Klassenebene.
@@ -40,26 +43,16 @@ public class Controller {
 		return InstanceHolder.INSTANCE;
 	}
 
-	public void setData(ArrayList startgroups, ArrayList sportsmen,
-			ArrayList<Startlist> startlistElements,
-			int selectedCompetition,
-			int selectedStartgroup) {
-		setStartgroups(startgroups);
-		setSportsmen(sportsmen);
-		this.selectedCompetition = selectedCompetition;
-		this.selectedStartgroup = selectedStartgroup;
-        setStartlistElements(startlistElements);
-
-	}
-
     public void clearData(){
         startgroups = new ArrayList<Startgroup>();
         sportsmen = new ArrayList<Sportsmen>();
+        startNumbers = new ArrayList<Integer>();
         startlistElements = new HashMap<Integer,Startlist>();
         numbers = new HashMap<Integer,Sportsmen>();
+        groups = new HashMap<Integer,Startgroup>();
         selectedCompetition = -1;
         selectedStartgroup = -1;
-        competition = null;
+        competitions.clear();
     }
 
 	public ArrayList getStartgroups() {
@@ -70,6 +63,7 @@ public class Controller {
 
         this.startgroups = startgroups;
         numbers.clear();
+        groups.clear();
         startNumbers.clear();
 
         for(Startgroup startgroup : startgroups){
@@ -82,6 +76,10 @@ public class Controller {
 
             if(!startNumbers.contains(startgroup.getStartNum())) {
                 startNumbers.add(startgroup.getStartNum());
+            }
+            
+            if(!groups.contains(startgroup.getId())){
+            	groups.put(startgroup.getId,startgroup);
             }
         }
 	}
@@ -140,21 +138,27 @@ public class Controller {
 		return numbers;
 	}
 
-    public Competition getCompetition() {
-        return competition;
-    }
-
-    public void setCompetition(Competition competition) {
-        this.competition = competition;
-    }
-
-
     public ArrayList<Integer> getStartNumbers() {
         return startNumbers;
     }
 
     public void setStartNumbers(ArrayList<Integer> startNumbers) {
         this.startNumbers = startNumbers;
+    }
+    
+    public HashMap getCompetitions() {
+		return competitions;
+	}
+
+    public void setCompetitions(ArrayList<Competition> competitions) {
+
+	clearData();
+
+        for(Competition c : competitions){
+            if(this.competititons.get(c.getId()) == null){
+                this.competitions.put(c.getId(),c);
+            }
+        }
     }
 
 
