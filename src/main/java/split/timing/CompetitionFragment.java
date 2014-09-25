@@ -410,8 +410,6 @@ public class CompetitionFragment extends Fragment implements
 
         co.setStartgroups(mData);
 
-        controller.clearData();
-        controller.setCompetition(co);
         controller.setSelectedCompetition(co.getId());
         controller.setStartgroups(co.getStartgroups());
 
