@@ -35,6 +35,7 @@ import split.timing.R;
 import split.timing.items.Competition;
 import split.timing.items.Sportsmen;
 import split.timing.items.Startgroup;
+import split.timing.items.Startlist;
 
 public class StableArrayAdapter extends ArrayAdapter<String> {
 
@@ -42,6 +43,9 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
 
     ArrayList contentList;
     HashMap<Object, Integer> mIdMap = new HashMap<Object, Integer>();
+    HashMap<Integer, Startlist> startlistMap = new HashMap<Integer, Startlist>();
+    HashMap<Integer, Sportsmen> sportsmenMap = new HashMap<Integer, Sportsmen>();
+    HashMap<Integer, Startgroup> startgroupMap = new HashMap<Integer, Startgroup>();
 
     Startgroup startgroup;
     Competition competition;
@@ -49,30 +53,29 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
     int saveMinute;
     int mode;
 
-    public StableArrayAdapter(Context context, int textViewResourceId, Object parent, int mode) {
+    Controller controller = Controller.getInstance();
+
+    public StableArrayAdapter(Context context, int textViewResourceId,ArrayList objects, int mode) {
         super(context, textViewResourceId);
 
-        ArrayList objects = new ArrayList();
-
-        if (parent instanceof Competition) {
-            competition = (Competition) parent;
-            objects = competition.getStartgroups();
-        }
-
-        if (parent instanceof Startgroup) {
-            startgroup = (Startgroup) parent;
-            objects = startgroup.getSportsmens();
-        }
-
-        for (int i = 0; i < objects.size(); ++i) {
-            if (mode == 0) {
-                mIdMap.put(objects.get(i).toString(), i);
-            } else {
-                mIdMap.put(objects.get(i).toString(), i);
-            }
-
-        }
         contentList = objects;
+
+
+        if (mode == 0) {
+            startgroup = controller.getGroups().get(controller.getSelectedStartgroup());
+            sportsmenMap = controller.getNumbers();
+
+
+        }else if (mode == 1) {
+            competition = controller.getCompetitions().get(controller.getSelectedCompetition());
+        }
+
+        int i = 0;
+        for (Object o : objects) {
+            mIdMap.put(o.toString(), i);
+            i++;
+        }
+
         this.mode = mode;
 
     }
@@ -86,7 +89,7 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
         }
 
         LayerDrawable bgDrawable = (LayerDrawable) convertView.getBackground();
-        GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.card_border);
+        GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.simple_card_border);
 
         Object element = contentList.get(position);
 
@@ -100,66 +103,49 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
 
         switch (mode) {
             case 0:
-                Sportsmen s = (Sportsmen) element;
-                name.setText(s.getName());
+                Startlist start = ((Startlist) element);
+                Sportsmen s = sportsmenMap.get(start.getSportsmenId());
+                name.setText(s.getName()+" "+s.getLastName());
                 club.setText(s.getClub());
                 fed.setText(s.getFederation());
                 shape.setColor(ColorSetter.newInstance(0));
-                age.setText("" + (position + 1));
-                year.setText("" + (startgroup.getStartNum() + position));
+                age.setText("" + (start.getStartposition() + 1));
+                year.setText("" + start.getNumber());
+                year.setTextColor(ColorSetter.newInstance(0));
 
                 String timetext;
 
-                int tmp = startgroup.getInterval() * contentList.indexOf(element);
+                int tmp = start.getDifference();
 
                 int hour = (tmp / 3600);
                 int minute = (tmp % 3600) / 60;
                 int second = +tmp % 60;
 
-                if (contentList.indexOf(element) == 0) {
-                    timetext = startgroup.getStartHour() + ":";
 
-                    if (startgroup.getStartMinute() < 10) {
-                        timetext = timetext + "0" + startgroup.getStartMinute() + ":";
-                    } else {
-                        timetext = timetext + startgroup.getStartMinute() + ":";
-                    }
-
-                    if (startgroup.getStartSecond() < 10) {
-                        timetext = timetext + "0" + startgroup.getStartSecond();
-                    } else {
-                        timetext = timetext + startgroup.getStartSecond() + "";
-                    }
+                if (position % 5 == 0) {
+                    hour = hour + startgroup.getStartHour();
+                    minute = minute + startgroup.getStartMinute();
+                    second = second + startgroup.getStartSecond();
+                    timetext = hour + ":";
                 } else {
-
-
-                    if((startgroup.getStartNum()+position)%5 == 0){
-                        hour=hour+startgroup.getStartHour();
-                        minute = minute+startgroup.getStartMinute();
-                        second = second+startgroup.getStartSecond();
-                        timetext = hour+":";
-                    }else{
-                        if(hour > 0){
-                            timetext = "+"+hour+":";
-                        }else {
-                            timetext ="+";
-                        }
-                    }
-
-
-
-
-                    if (minute < 10) {
-                        timetext = timetext + "0" +minute + ":";
+                    if (hour > 0) {
+                        timetext = "+" + hour + ":";
                     } else {
-                        timetext = timetext + minute + ":";
+                        timetext = "+";
                     }
+                }
 
-                    if (second < 10) {
-                        timetext = timetext + "0" + second;
-                    } else {
-                        timetext = timetext + second + "";
-                    }
+
+                if (minute < 10) {
+                    timetext = timetext + "0" + minute + ":";
+                } else {
+                    timetext = timetext + minute + ":";
+                }
+
+                if (second < 10) {
+                    timetext = timetext + "0" + second;
+                } else {
+                    timetext = timetext + second + "";
                 }
 
 
@@ -168,13 +154,13 @@ public class StableArrayAdapter extends ArrayAdapter<String> {
 
                 break;
             case 1:
-                Startgroup list = (Startgroup) element;
+                Startgroup list = (Startgroup)element;
 
                 DBHelper db = new DBHelper();
                 Cursor cursor = db.select("SELECT * FROM Startlist WHERE startgroupId=" + list.getId());
 
                 year.setText("" + cursor.getCount());
-                year.setTextColor(ColorSetter.newInstance(11));
+                year.setTextColor(ColorSetter.newInstance(2));
 
                 age.setText("" + (position + 1));
 

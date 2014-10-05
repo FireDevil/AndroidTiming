@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/simple_card_border">
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <corners android:radius="2dp"/>
+
+            <solid android:color="#000000" />
+
+        </shape>
+    </item>
+
+    <item android:bottom="1dp"
+        android:top="1dp"
+        android:right="0dp"
+        android:left="0dp">
+        <shape android:shape="rectangle"
+            android:dither="true">
+
+            <corners android:radius="2dp" />
+
+            <solid android:color="@android:color/white" />
+
+            <padding android:bottom="1dp"
+                android:left="0dp"
+                android:right="0dp"
+                android:top="1dp" />
+        </shape>
+    </item>
+</layer-list><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/drawable-xxhdpi/simple_card.xml -->

@@ -15,7 +15,7 @@
         <attr name="cb_color" format="color" />
         <attr name="cb_pressed_ring_width" format="dimension" />
     </declare-styleable>
-    <!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/2.0.1/res/values/values.xml -->
+    <!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/build/intermediates/exploded-aar/com.sothree.slidinguppanel/library/2.0.2/res/values/values.xml -->
     <eat-comment />
 
     <declare-styleable name="SlidingUpPanelLayout">
@@ -101,7 +101,7 @@
 
     <style name="UndoBar">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">bottom</item>
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>

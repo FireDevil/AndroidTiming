@@ -31,7 +31,6 @@ import split.timing.helpers.DynamicListView;
 import split.timing.helpers.StableArrayAdapter;
 import split.timing.helpers.SwipeToDismissListener;
 import split.timing.helpers.UndoBarController;
-import split.timing.items.Sportsmen;
 import split.timing.items.Startgroup;
 import split.timing.items.Startlist;
 
@@ -47,7 +46,7 @@ public class StartgroupFragment  extends Fragment implements
     @Override
     public void swapElements(int first, int second) {
 
-        Sportsmen temp = backUpList.get(first);
+        Startlist temp = backUpList.get(first);
         backUpList.set(first, backUpList.get(second));
         backUpList.set(second, temp);
 
@@ -108,29 +107,23 @@ public class StartgroupFragment  extends Fragment implements
 
     DynamicListView lv;
     TextView nameLabel;
-
     CircleButton add;
-
-    ArrayList<Sportsmen> mData;
     StableArrayAdapter adapter;
 
     int backUpPosition = -1;
     int backId = -1;
-    ArrayList<Sportsmen> backUpList;
-
+    int dismissId = -1;
+    ArrayList<Startlist> mData;
+    ArrayList<Startlist> backUpList;
     HashMap<Integer, Integer> ids;
 
     boolean dismissed = false;
-
     UndoBarController undoBarController;
 
     Cursor c;
     int competitionId;
     int startgroupId;
     Startgroup startgroup = new Startgroup();
-
-    boolean detailsOpened = true;
-    boolean preExisting = false;
 
     int mode = 0;
 
@@ -162,8 +155,8 @@ public class StartgroupFragment  extends Fragment implements
         if (getArguments() != null) {
             DBHelper db = new DBHelper();
 
-            mData = new ArrayList<Sportsmen>();
-            backUpList = new ArrayList<Sportsmen>();
+            mData = new ArrayList<Startlist>();
+            backUpList = new ArrayList<Startlist>();
             ids = new HashMap<Integer, Integer>();
 
             competitionId = getArguments().getInt("competitionId");
@@ -183,13 +176,14 @@ public class StartgroupFragment  extends Fragment implements
 
                 comp.close();
 
-                c = db.select("SELECT * FROM Startlist JOIN Sportsmen WHERE Startlist.sportsmenId = Sportsmen._id AND Startlist.startgroupId="+startgroupId);
+                c = db.select("SELECT * FROM Startlist WHERE Startlist.startgroupId="+startgroupId);
                 c.moveToLast();
                 int pos = 0;
 
                 if(getArguments().containsKey("added")){
 
                     int number;
+                    int set = -1;
 
                     if(c.getCount() == 0){
                         number = startgroup.getStartNum()-1;
@@ -197,37 +191,54 @@ public class StartgroupFragment  extends Fragment implements
                         number = c.getInt(1);
                     }
 
+                    boolean overflow = false;
+
                     for(int id : getArguments().getIntegerArrayList("added")){
 
-                        number = number+pos+1;
-
-                        if(number != startgroup.getStartNum()-1 && controller.getStartNumbers().contains(number)){
-                            number = 100192;
+                        if(set != 9999) {
+                            overflow = set != startgroup.getStartNum() && controller.getStartNumbers().contains(set);
                         }
+
+                        if(overflow || number == 9999){
+                            set = 9999;
+                        }else {
+                            set = number+pos+1;
+                        }
+
+
 
                         ContentValues values = new ContentValues();
                         values.put("sportsmenId",id);
                         values.put("startgroupId",startgroupId);
                         values.put("competitionId",competitionId);
                         values.put("jersey",false);
-                        values.put("number",number);
+                        values.put("number",set);
                         values.put("startposition",c.getCount()+pos);
+                        values.put("difference",(c.getCount()+pos)*startgroup.getInterval());
                         db.insert("Startlist",values);
 
                         pos++;
                     }
 
-                    c.close();
-                }
 
-                c = db.select("SELECT * FROM Startlist JOIN Sportsmen WHERE Startlist.sportsmenId = Sportsmen._id AND Startlist.startgroupId="+startgroupId);
+                }
+                c.close();
+
+                c = db.select("SELECT * FROM Startlist WHERE Startlist.startgroupId="+startgroupId+" ORDER BY number");
                 if (c.getCount() > 0) {
                     pos = 0;
 
                     while (c.moveToNext()) {
-                        mData.add(new Sportsmen(c.getInt(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getInt(12), c.getString(13), c.getString(14)));
-                        backUpList.add(new Sportsmen(c.getInt(7), c.getString(8), c.getString(9), c.getString(10), c.getInt(11), c.getInt(12), c.getString(13), c.getString(14)));
-                        ids.put(pos, c.getInt(7));
+                        boolean jersey = Boolean.parseBoolean(c.getString(2));
+
+                        if(c.getInt(1) == startgroup.getJerseyNum() && !jersey){
+                            jersey = true;
+                        }
+
+
+                        mData.add(new Startlist(c.getInt(0),c.getInt(1),jersey,c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6),c.getInt(7)));
+                        backUpList.add(new Startlist(c.getInt(0),c.getInt(1),Boolean.parseBoolean(c.getString(2)),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6),c.getInt(7)));
+                        ids.put(pos, c.getInt(0));
                         pos++;
                     }
 
@@ -235,10 +246,13 @@ public class StartgroupFragment  extends Fragment implements
                         startgroup.setJerseyNum(-1);
                     }
 
-                    startgroup.setSportsmens(mData);
+
+
 
                 }
 
+                controller.setStartlistElements(mData);
+                controller.setSelectedStartgroup(startgroup.getId());
                 c.close();
 
                 nameLabel.setText(startgroup.getName());
@@ -248,9 +262,12 @@ public class StartgroupFragment  extends Fragment implements
                     public void onClick(View view) {
                         ArrayList tmp = new ArrayList<Integer>();
 
-                        for(int key : ids.keySet()){
-                            tmp.add(ids.get(key));
+                        for(Startlist startlist : mData){
+                            if(!tmp.contains(startlist.getSportsmenId())) {
+                                tmp.add(startlist.getSportsmenId());
+                            }
                         }
+
                         tmp.add(0);
 
                         mCallbacks.callStartgroupAddDialog(tmp, startgroupId);
@@ -263,7 +280,7 @@ public class StartgroupFragment  extends Fragment implements
         }
 
 
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, startgroup, 0);
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element,mData, 0);
         undoBarController = new UndoBarController(rootView.findViewById(R.id.undobar), this);
 
 
@@ -276,23 +293,29 @@ public class StartgroupFragment  extends Fragment implements
 
                     @Override
                     public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+
+
                         deleteOnDismiss();
 
                         for (int position : reverseSortedPositions) {
 
-                            if (ids.size() > 0) {
-                                backId = ids.get(position);
-                            }
+                            if(ids.size() >= position) {
 
-                            backUpPosition = position;
-                            undoBarController.showUndoBar(
-                                    false,
-                                    mData.get(position).toString(),
-                                    null);
-                            ids.remove(position);
-                            mData.remove(position);
-                            //adapter.removeItem(backUpList.get(position),position);
-                            dismissed = true;
+                                if (ids.size() > 0) {
+                                    backId = mData.get(position).getId();
+                                }
+
+                                backUpPosition = position;
+                                undoBarController.showUndoBar(
+                                        false,
+                                        mData.get(position).getNumber() + " - " + controller.getNumbers().get(mData.get(position).getSportsmenId()).getName(),
+                                        null);
+                                ids.keySet().remove(position);
+                                mData.remove(position);
+                                //adapter.removeItem(backUpList.get(position),position);
+                                dismissed = true;
+
+                            }
                         }
 
                         adapter.notifyDataSetChanged();
@@ -321,7 +344,7 @@ public class StartgroupFragment  extends Fragment implements
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCallbacks.onSportsmenSelected(competitionId,startgroupId,((Sportsmen)mData.get(position)).getId());
+                mCallbacks.onSportsmenSelected(competitionId,startgroupId,mData.get(position).getSportsmenId());
             }
         });
 
@@ -374,28 +397,77 @@ public class StartgroupFragment  extends Fragment implements
     }
 
     @Override
+    public void onDestroyView(){
+        super.onDestroyView();
+        deleteOnDismiss();
+        save();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        deleteOnDismiss();
+        save();
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
-        menuInflater.inflate(R.menu.competition, menu);
+        menuInflater.inflate(R.menu.startgroup, menu);
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        switch (item.getItemId()) {
+            case R.id.startgroup_clear_btn:
+                DBHelper dbHelper = new DBHelper();
+                dbHelper.delete("Startlist"," startgroupId="+startgroupId);
+                mData.clear();
+                ids.clear();
+
+                undoBarController.showUndoBar(
+                        false,
+                        "All starters",
+                        null);
+
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.startgroup_reorder:
+                reorderList();
+                adapter.notifyDataSetChanged();
+                break;
+        }
+
         return true;
     }
 
-    public void addNewSportsmen(){
+    public void reorderList(){
+
+        int start = startgroup.getStartNum();
+        int pos=0;
+        int number = 0;
+
+        for(Startlist startlist : mData){
+            number = start+pos;
+            startlist.setNumber(number);
+            startlist.setStartposition(pos);
+            startlist.setDifference(pos*startgroup.getInterval());
+
+            pos++;
+        }
+
+        save();
+        adapter.notifyDataSetChanged();
 
     }
 
     public void refreshStartgroupData(Startgroup s){
         startgroup = s;
-        startgroup.setSportsmens(mData);
         startgroupId = s.getId();
         nameLabel.setText(s.getName());
 
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, startgroup, 0);
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element,mData, 0);
         lv.setAdapter(adapter);
 
         adapter.notifyDataSetInvalidated();
@@ -412,10 +484,10 @@ public class StartgroupFragment  extends Fragment implements
         int position=0;
         boolean jersey = false;
 
-        for(Sportsmen s : mData){
+        for(Startlist s : mData){
 
 
-            if(startgroup.getStartNum()+position == startgroup.getJerseyNum()){
+            if(!s.isJersey() && startgroup.getStartNum()+position == startgroup.getJerseyNum()){
                 jersey = true;
             }else{
                 jersey = false;
@@ -423,22 +495,21 @@ public class StartgroupFragment  extends Fragment implements
 
 
             values = new ContentValues();
-            values.put("sportsmenId",s.getId());
+            values.put("sportsmenId",s.getSportsmenId());
             values.put("startgroupId",startgroupId);
             values.put("competitionId",competitionId);
             values.put("jersey",jersey);
-            values.put("number", startgroup.getStartNum()+position);
+            values.put("number", s.getNumber());
             values.put("startposition",position);
+            values.put("difference",position*startgroup.getInterval());
             db.insert("Startlist",values);
 
-            startlist.add(new Startlist(s.getId(),startgroup.getStartNum()+position,jersey,competitionId,startgroupId,s.getId(),position));
+            startlist.add(new Startlist(s.getId(),s.getNumber(),jersey,position,competitionId,startgroupId,s.getSportsmenId(),position*startgroup.getInterval()));
 
             position++;
         }
 
-        startgroup.setSportsmens(mData);
         controller.setSelectedStartgroup(startgroup.getId());
-        controller.setSportsmen(startgroup.getSportsmens());
         controller.setStartlistElements(startlist);
         db.close();
     }
@@ -446,7 +517,7 @@ public class StartgroupFragment  extends Fragment implements
     private void deleteOnDismiss() {
         if (backUpPosition >= 0 && dismissed) {
             DBHelper db = new DBHelper();
-            db.sqlCommand("DELETE FROM Startlist WHERE sportsmenId=" + ((Sportsmen) backUpList.get(backUpPosition)).getId() + " AND startgroupId=" + startgroupId);
+            db.sqlCommand("DELETE FROM Startlist WHERE sportsmenId=" + backUpList.get(backUpPosition).getSportsmenId() + " AND startgroupId=" + startgroupId);
 
             dismissed = false;
             backUpList.remove(backUpPosition);
@@ -458,14 +529,26 @@ public class StartgroupFragment  extends Fragment implements
     @Override
     public void onUndo(Parcelable token) {
         dismissed = false;
-        if (mData.size() == backUpPosition) {
-            ids.put(backUpPosition, ids.size());
-            mData.add(backUpList.get(backUpPosition));
-            //adapter.addItem(backUpList.get(backUpPosition),mData.size());
-        } else {
-            ids.put(backUpPosition, backId);
-            mData.add(backUpPosition, backUpList.get(backUpPosition));
-            //adapter.addItem(backUpList.get(backUpPosition),backUpPosition);
+
+        if(mData.size() == 0){
+            mData.addAll(backUpList);
+
+            int pos = 0;
+            for(Startlist s: mData) {
+                ids.put(pos, s.getId());
+                pos++;
+            }
+        }else {
+
+            if (mData.size() == backUpPosition) {
+                ids.put(backUpPosition, ids.size());
+                mData.add(backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),mData.size());
+            } else {
+                ids.put(backUpPosition, backId);
+                mData.add(backUpPosition, backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),backUpPosition);
+            }
         }
 
         adapter.notifyDataSetChanged();

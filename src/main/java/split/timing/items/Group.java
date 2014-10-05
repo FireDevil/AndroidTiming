@@ -50,6 +50,6 @@ public class Group {
 
     @Override
     public String toString(){
-        return getName();
+        return getId()+"";
     }
 }

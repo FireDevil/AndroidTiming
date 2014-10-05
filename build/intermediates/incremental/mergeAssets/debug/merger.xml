@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merger version="2" >
 
-    <dataSet config="2.0.1" >
-        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\2.0.1\assets" />
+    <dataSet config="20.0.0" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\exploded-aar\com.android.support\support-v4\20.0.0\assets" />
+    </dataSet>
+    <dataSet config="2.0.2" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\exploded-aar\com.sothree.slidinguppanel\library\2.0.2\assets" />
+    </dataSet>
+    <dataSet config="20.0.0" >
+        <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\exploded-aar\com.android.support\support-v13\20.0.0\assets" />
     </dataSet>
     <dataSet config="main" >
         <source path="C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\src\main\assets" >

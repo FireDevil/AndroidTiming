@@ -13,6 +13,7 @@
             android:id="@+id/competition_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="4dp"
             android:background="@drawable/card"
             android:orientation="vertical">
 
@@ -52,6 +53,7 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:paddingTop="4dp"
         android:animateLayoutChanges="true">
 
         <split.timing.helpers.DynamicListView
@@ -74,6 +76,7 @@
 
         <LinearLayout
             android:id="@+id/undobar"
+            android:layout_marginBottom="-50dp"
             style="@style/UndoBar"
             android:layout_marginRight="80dp">
 
@@ -83,6 +86,7 @@
 
             <Button
                 android:id="@+id/undobar_button"
+                android:text="restore"
                 style="@style/UndoBarButton" />
         </LinearLayout>
 

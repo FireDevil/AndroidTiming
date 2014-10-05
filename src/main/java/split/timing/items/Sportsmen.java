@@ -101,7 +101,7 @@ public class Sportsmen {
 
     @Override
     public String toString(){
-        return getName()+" "+getLastName().substring(0,1);
+        return getId()+"";
     }
 
 }

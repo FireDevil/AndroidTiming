@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 
 import split.timing.helpers.CircleButton;
 import split.timing.helpers.ColorSetter;
+import split.timing.helpers.Controller;
 import split.timing.helpers.CustomArrayAdapter;
 import split.timing.helpers.DBHelper;
 import split.timing.helpers.SwipeToDismissListener;
@@ -118,8 +118,11 @@ public class NEWListFragment extends Fragment implements
     public NEWListFragment() {
     }
 
+    View rootView;
     ListView lv;
     TextView order;
+    TextView top;
+    CircleButton cb;
 
     Bundle mArgs;
     CustomArrayAdapter adapter;
@@ -132,10 +135,10 @@ public class NEWListFragment extends Fragment implements
     Cursor c;
     int sortOrder = 1;
 
-    String[] listModeTable = new String[]{"Sportsmen", "Groups", "Startgroup","Competition"};
+    String[] listModeTable = new String[]{"Sportsmen", "Groups", "Startgroup", "Competition"};
     String[] sortList;
-    
-    Controller controller = Controller.newInstance();
+
+    Controller controller = Controller.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -146,24 +149,26 @@ public class NEWListFragment extends Fragment implements
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
-        TextView top = (TextView) rootView.findViewById(R.id.listText);
+        rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        top = (TextView) rootView.findViewById(R.id.listText);
         lv = (ListView) rootView.findViewById(R.id.listView);
         order = (TextView) rootView.findViewById(R.id.list_order);
-        CircleButton cb = (CircleButton) rootView.findViewById(R.id.list_circle_btn);
-
-        DBHelper db =null;
-        try {
-            db = new DBHelper();
-        }catch(Exception sql){
-            Log.e("SQLiteCantOpenDatabaseException","NEWListFragement Line: 158");
-        }
+        cb = (CircleButton) rootView.findViewById(R.id.list_circle_btn);
 
         if (getArguments() != null) {
             mArgs = getArguments();
         } else {
             return rootView;
         }
+
+        return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        DBHelper db  = new DBHelper();
 
         if (mArgs.containsKey("Sports")) {
 
@@ -262,19 +267,19 @@ public class NEWListFragment extends Fragment implements
             });
         }*/
 
-        if(mArgs.containsKey("Competition")){
-            sortList = new String[]{"_id","name","date","location"};
+        if (mArgs.containsKey("Competition")) {
+            sortList = new String[]{"_id", "name", "location"};
 
             top.setText("Competitions");
-            c = db.select("SELECT * FROM Competition WHERE finished="+0);
+            c = db.select("SELECT * FROM Competition WHERE finished=" + 0);
 
             mData = new ArrayList<Competition>();
             backUpList = new ArrayList<Competition>();
             listMode = 3;
 
-            while(c.moveToNext()){
-                mData.add(new Competition(c.getInt(0),c.getString(1),c.getString(2),c.getString(3),c.getInt(4)));
-                backUpList.add(new Competition(c.getInt(0),c.getString(1),c.getString(2),c.getString(3),c.getInt(4)));
+            while (c.moveToNext()) {
+                mData.add(new Competition(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4)));
+                backUpList.add(new Competition(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4)));
             }
 
             cb.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +292,7 @@ public class NEWListFragment extends Fragment implements
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    mCallbacks.onCompetitionSelected(((Competition)mData.get(i)).getId());
+                    mCallbacks.onCompetitionSelected(((Competition) mData.get(i)).getId());
                 }
             });
         }
@@ -338,13 +343,6 @@ public class NEWListFragment extends Fragment implements
         lv.setOnTouchListener(touchListener);
         cb.setColor(ColorSetter.newInstance(listMode));
 
-        return rootView;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
     }
 
     @Override
@@ -362,8 +360,12 @@ public class NEWListFragment extends Fragment implements
     @Override
     public void onDetach() {
         super.onDetach();
-       deleteOnDismiss();
-        controller.setCompetitions(mData);
+        deleteOnDismiss();
+
+        if(mData.get(0) instanceof Competition){
+            controller.setCompetitions(mData);
+        }
+
         // Reset the active callbacks interface to the dummy implementation.
         mCallbacks = sDummyCallbacks;
     }
@@ -372,7 +374,10 @@ public class NEWListFragment extends Fragment implements
     public void onPause() {
         super.onPause();
         deleteOnDismiss();
-        controller.setCompetitions(mData);
+
+        if(mData.size() > 0 && mData.get(0) instanceof Competition){
+            controller.setCompetitions(mData);
+        }
     }
 
 
@@ -485,9 +490,9 @@ public class NEWListFragment extends Fragment implements
                         mData.clear();
                         backUpList.clear();
 
-                        while(cursor.moveToNext()){
-                            mData.add(new Competition(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4)));
-                            backUpList.add(new Competition(cursor.getInt(0),cursor.getString(1),cursor.getString(2),cursor.getString(3),cursor.getInt(4)));
+                        while (cursor.moveToNext()) {
+                            mData.add(new Competition(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4)));
+                            backUpList.add(new Competition(cursor.getInt(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4)));
                         }
 
                         cursor.close();
@@ -509,7 +514,7 @@ public class NEWListFragment extends Fragment implements
         return false;
     }
 
-    private void deleteOnDismiss(){
+    private void deleteOnDismiss() {
         if (backUpPosition >= 0 && dismissed) {
 
             DBHelper db = new DBHelper();
@@ -517,21 +522,19 @@ public class NEWListFragment extends Fragment implements
                 case 0:
                     db.delete("Sportsmen", " _id=" + ((Sportsmen) backUpList.get(backUpPosition)).getId());
                     db.sqlCommand("DELETE FROM Groupmember WHERE sportsmenId=" + ((Sportsmen) backUpList.get(backUpPosition)).getId());
-                    db.sqlCommand("DELETE FROM Startlist WHERE sportsmenId=" + ((Sportsmen)backUpList.get(backUpPosition)).getId());
-                    db.sqlCommand("DELETE FROM Startgroupmember WHERE sportsmenId="+((Sportsmen)backUpList.get(backUpPosition)).getId());
+                    db.sqlCommand("DELETE FROM Startlist WHERE sportsmenId=" + ((Sportsmen) backUpList.get(backUpPosition)).getId());
                     break;
                 case 1:
                     db.delete("Groups", "_id=" + ((Group) backUpList.get(backUpPosition)).getId());
                     db.sqlCommand("DELETE FROM Groupmember WHERE groupId=" + ((Group) backUpList.get(backUpPosition)).getId());
                     break;
                 case 2:
-                    db.delete("Startgroup","_id="+((Startgroup)backUpList.get(backUpPosition)).getId());
-                    db.sqlCommand("DELETE FROM Startgroupmember WHERE _id="+((Startgroup) backUpList.get(backUpPosition)).getId());
-                    db.sqlCommand("DELETE FROM Startlist WHERE startgroupId="+((Startgroup) backUpList.get(backUpPosition)).getId());
+                    db.delete("Startgroup", "_id=" + ((Startgroup) backUpList.get(backUpPosition)).getId());
+                    db.sqlCommand("DELETE FROM Startlist WHERE startgroupId=" + ((Startgroup) backUpList.get(backUpPosition)).getId());
                     break;
                 case 3:
-                    db.delete("Competition","_id="+((Competition)backUpList.get(backUpPosition)).getId());
-                    db.sqlCommand("DELETE FROM Competitionmember WHERE competitionId="+((Competition)backUpList.get(backUpPosition)).getId());
+                    db.delete("Competition", "_id=" + ((Competition) backUpList.get(backUpPosition)).getId());
+                    db.sqlCommand("DELETE FROM Competitionmember WHERE competitionId=" + ((Competition) backUpList.get(backUpPosition)).getId());
                     break;
             }
 

@@ -178,6 +178,8 @@ public class CompetitionFragment extends Fragment implements
 
         nameLabel = (TextView) rootView.findViewById(R.id.competition_label);
 
+//        loadSportsmen();
+
         if (getArguments() != null) {
 
 
@@ -209,6 +211,7 @@ public class CompetitionFragment extends Fragment implements
                     }
                 }
 
+                controller.setStartgroups(mData);
                 c.close();
 
                 Cursor comp = db.select("SELECT * FROM Competition WHERE _id=" + competitionId);
@@ -233,7 +236,7 @@ public class CompetitionFragment extends Fragment implements
         }
 
 
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, co, mode);
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element,mData, mode);
         undoBarController = new UndoBarController(rootView.findViewById(R.id.undobar), this);
 
 
@@ -257,7 +260,7 @@ public class CompetitionFragment extends Fragment implements
                             backUpPosition = position;
                             undoBarController.showUndoBar(
                                     false,
-                                    mData.get(position).toString(),
+                                    mData.get(position).getName(),
                                     null);
                             ids.remove(position);
                             mData.remove(position);
@@ -309,17 +312,20 @@ public class CompetitionFragment extends Fragment implements
         return rootView;
     }
 
+
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            // mListener = (OnDialogInteractionListener) activity;
+            mCallbacks = (Callbacks) activity;
+            controller.loadSportsmen();
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnDialogInteractionListener");
+                    + " must implement Callbacks");
         }
 
-        mCallbacks = (Callbacks) activity;
+
     }
 
     @Override
@@ -356,15 +362,18 @@ public class CompetitionFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
-            case R.id.competition_save_btn:
-                //getFragmentManager().popBackStack();
-                //mCallbacks.onCompetitionSelected(competitionId);
-                break;
             case R.id.competition_clear_btn:
+                DBHelper dbHelper = new DBHelper();
+                dbHelper.delete("Competitionmember"," competitionId="+competitionId);
+                mData.clear();
+                ids.clear();
 
-                break;
-            case R.id.competition_startlist:
+                undoBarController.showUndoBar(
+                        false,
+                        "All groups",
+                        null);
 
+                adapter.notifyDataSetChanged();
                 break;
         }
 
@@ -380,7 +389,7 @@ public class CompetitionFragment extends Fragment implements
 
         co.setStartgroups(mData);
 
-        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element, co, mode);
+        adapter = new StableArrayAdapter(getActivity(), R.layout.startlist_element,mData, mode);
         lv.setAdapter(adapter);
     }
 
@@ -432,15 +441,28 @@ public class CompetitionFragment extends Fragment implements
     @Override
     public void onUndo(Parcelable token) {
         dismissed = false;
-        if (mData.size() == backUpPosition) {
-            ids.put(backUpPosition, ids.size());
-            mData.add(backUpList.get(backUpPosition));
-            //adapter.addItem(backUpList.get(backUpPosition),mData.size());
-        } else {
-            ids.put(backUpPosition, backId);
-            mData.add(backUpPosition, backUpList.get(backUpPosition));
-            //adapter.addItem(backUpList.get(backUpPosition),backUpPosition);
+
+        if(mData.size() == 0){
+            mData.addAll(backUpList);
+
+            int pos = 0;
+            for(Startgroup s: mData) {
+                ids.put(pos, s.getId());
+                pos++;
+            }
+        }else {
+
+            if (mData.size() == backUpPosition) {
+                ids.put(backUpPosition, ids.size());
+                mData.add(backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),mData.size());
+            } else {
+                ids.put(backUpPosition, backId);
+                mData.add(backUpPosition, backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),backUpPosition);
+            }
         }
+
 
         adapter.notifyDataSetChanged();
     }

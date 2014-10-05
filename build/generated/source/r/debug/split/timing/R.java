@@ -215,17 +215,18 @@ containing a value of this type.
         public static final int ic_num_list=0x7f020026;
         public static final int ic_undobar_undo=0x7f020027;
         public static final int scroll_fast=0x7f020028;
-        public static final int spinner_orange=0x7f020029;
-        public static final int spinner_red=0x7f02002a;
-        public static final int undobar=0x7f02002b;
-        public static final int undobar_button=0x7f02002c;
-        public static final int undobar_button_focused=0x7f02002d;
-        public static final int undobar_button_pressed=0x7f02002e;
-        public static final int undobar_divider=0x7f02002f;
+        public static final int simple_card=0x7f020029;
+        public static final int spinner_orange=0x7f02002a;
+        public static final int spinner_red=0x7f02002b;
+        public static final int undobar=0x7f02002c;
+        public static final int undobar_button=0x7f02002d;
+        public static final int undobar_button_focused=0x7f02002e;
+        public static final int undobar_button_pressed=0x7f02002f;
+        public static final int undobar_divider=0x7f020030;
     }
     public static final class id {
-        public static final int action_example=0x7f060098;
-        public static final int action_settings=0x7f060094;
+        public static final int action_example=0x7f060099;
+        public static final int action_settings=0x7f060093;
         public static final int addGroup_betlabe=0x7f060031;
         public static final int addGroup_clearbutton=0x7f060037;
         public static final int addGroup_distancelabe=0x7f060026;
@@ -254,8 +255,6 @@ containing a value of this type.
         public static final int competition_name_edit=0x7f060043;
         public static final int competition_name_row=0x7f060041;
         public static final int competition_name_text=0x7f060042;
-        public static final int competition_save_btn=0x7f060091;
-        public static final int competition_startlist=0x7f060093;
         public static final int container=0x7f06000b;
         public static final int drawer_layout=0x7f06000a;
         public static final int dynamic_grid_wobble_tag=0x7f060009;
@@ -288,7 +287,7 @@ containing a value of this type.
         public static final int list_circle_btn=0x7f060053;
         public static final int list_ll=0x7f06004f;
         public static final int list_order=0x7f060051;
-        public static final int list_sort=0x7f060095;
+        public static final int list_sort=0x7f060094;
         public static final int listview=0x7f06003c;
         public static final int navigation_drawer=0x7f06000c;
         public static final int new_detail=0x7f060058;
@@ -307,6 +306,7 @@ containing a value of this type.
         public static final int scrollView=0x7f060021;
         public static final int section_label=0x7f060055;
         public static final int section_label1=0x7f060057;
+        public static final int simple_card_border=0x7f060091;
         public static final int slide=0x7f060006;
         public static final int slideLeft=0x7f060008;
         public static final int slideRight=0x7f060007;
@@ -317,7 +317,7 @@ containing a value of this type.
         public static final int sliding_layout=0x7f060013;
         public static final int spinner_item_text=0x7f060083;
         public static final int spinnerll=0x7f060082;
-        public static final int sports_clear_btn=0x7f060097;
+        public static final int sports_clear_btn=0x7f060096;
         public static final int sports_club_edit=0x7f060060;
         public static final int sports_club_text=0x7f06005f;
         public static final int sports_datePicker=0x7f06005e;
@@ -325,18 +325,20 @@ containing a value of this type.
         public static final int sports_federation_text=0x7f060061;
         public static final int sports_name_edit=0x7f06005b;
         public static final int sports_name_text=0x7f06005a;
-        public static final int sports_save_btn=0x7f060096;
+        public static final int sports_save_btn=0x7f060095;
         public static final int sports_surname_edit=0x7f06005d;
         public static final int sports_surname_text=0x7f06005c;
         public static final int startgroup_add_btn=0x7f060011;
         public static final int startgroup_circle_btn=0x7f060067;
         public static final int startgroup_circle_edit=0x7f060066;
+        public static final int startgroup_clear_btn=0x7f060097;
         public static final int startgroup_label=0x7f060065;
         public static final int startgroup_label_row=0x7f060064;
         public static final int startgroup_ll=0x7f060063;
+        public static final int startgroup_reorder=0x7f060098;
         public static final int startlist_circle_btn=0x7f060077;
-        public static final int startlist_distance_edit=0x7f06006c;
-        public static final int startlist_distance_row=0x7f06006b;
+        public static final int startlist_distance_edit=0x7f06006b;
+        public static final int startlist_distance_row=0x7f06006c;
         public static final int startlist_edit_row=0x7f060039;
         public static final int startlist_element_extra=0x7f06008a;
         public static final int startlist_element_info=0x7f060089;
@@ -349,8 +351,8 @@ containing a value of this type.
         public static final int startlist_header_dismiss=0x7f06008e;
         public static final int startlist_header_edit=0x7f06008c;
         public static final int startlist_header_text=0x7f06008b;
-        public static final int startlist_interval_edit=0x7f06006e;
-        public static final int startlist_interval_row=0x7f06006d;
+        public static final int startlist_interval_edit=0x7f06006d;
+        public static final int startlist_interval_row=0x7f06006e;
         public static final int startlist_name_edit=0x7f06006a;
         public static final int startlist_name_row=0x7f060068;
         public static final int startlist_name_text=0x7f060069;
@@ -427,8 +429,9 @@ containing a value of this type.
         public static final int list_fragment=0x7f0a0002;
         public static final int main=0x7f0a0003;
         public static final int sports=0x7f0a0004;
-        public static final int startgroup__dialog=0x7f0a0005;
-        public static final int timing=0x7f0a0006;
+        public static final int startgroup=0x7f0a0005;
+        public static final int startgroup__dialog=0x7f0a0006;
+        public static final int timing=0x7f0a0007;
     }
     public static final class string {
         public static final int action_example=0x7f080000;

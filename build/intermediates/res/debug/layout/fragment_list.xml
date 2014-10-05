@@ -52,6 +52,7 @@
 
         <LinearLayout
             android:id="@+id/undobar"
+            android:layout_marginBottom="-50dp"
             style="@style/UndoBar"
             android:layout_marginRight="80dp">
 
@@ -61,6 +62,7 @@
 
             <Button
                 android:id="@+id/undobar_button"
+                android:text="restore"
                 style="@style/UndoBarButton" />
         </LinearLayout>
     </FrameLayout>

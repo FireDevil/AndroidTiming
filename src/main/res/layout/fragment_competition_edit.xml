@@ -9,6 +9,7 @@
         android:id="@+id/competition_ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="50dp"
         android:orientation="vertical">
 
         <TableRow
@@ -70,6 +71,7 @@
 
         <DatePicker
             android:id="@+id/competition_datepicker"
+            android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"

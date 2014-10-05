@@ -76,7 +76,7 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
         TableRow tab = (TableRow)convertView.findViewById(R.id.startlist_element_numTableRow);
 
         LayerDrawable bgDrawable = (LayerDrawable)convertView.getBackground();
-        final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.card_border);
+        final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.simple_card_border);
         shape.setColor(ColorSetter.newInstance(mode));
 
         switch (mode){

@@ -10,6 +10,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.format.Time;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,9 +18,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Chronometer;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Created by Antec on 03.06.2014.
@@ -55,6 +57,14 @@ public class TimingDrawerLeft extends Fragment {
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    long r = 0;
+    TextView time;
+    TextView span;
+    TextView ref;
+    Chronometer tick;
+    Time a;
+    Time b;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,33 +74,20 @@ public class TimingDrawerLeft extends Fragment {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
-        if (savedInstanceState != null) {
-            mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
-            mFromSavedInstanceState = true;
-        }
-
-        // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
-        setHasOptionsMenu(true);
+//        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.timing_drawer_left, container, false);
-        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
-            }
-        });
+        View rootView = inflater.inflate(R.layout.timing_drawer_left,container,false);
+        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
         mDrawerListView.setAdapter(new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
@@ -104,7 +101,67 @@ public class TimingDrawerLeft extends Fragment {
                 }
         ));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+
+        a = new Time();
+
+        tick = (Chronometer)rootView.findViewById(R.id.chrono);
+
+//        time = (TextView)findViewById(R.id.Time);
+//        span = (TextView)findViewById(R.id.Span);
+        ref = (TextView)rootView.findViewById(R.id.chronoText);
+
+        tick.setVisibility(View.GONE);
+        tick.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+
+            @Override
+            public void onChronometerTick(Chronometer arg0) {
+                b = new Time();
+                b.setToNow();
+                span.setText(formatTime(a.toMillis(true)+30000,b.toMillis(true)));
+                ref.setText(b.format("%H:%M:%S"));
+            }
+        });
+
+        return rootView;
+    }
+
+    public String formatTime(long first, long second){
+
+        long tmp = (second-first)/1000;
+        String pre =" ";
+
+        if(tmp < 0){
+            tmp = - tmp;
+            pre ="-";
+        }
+
+        int m = (int) (tmp / 60)%60;
+        int h = (int) tmp / 3600;
+        int s = (int) tmp % 60;
+
+        String hour="";
+        String minute="";
+        String seconds="";
+
+        if(h < 10){
+            hour = "0"+h;
+        }else{
+            hour = h+"";
+        }
+
+        if(m < 10){
+            minute ="0"+m;
+        }else{
+            minute =""+m;
+        }
+
+        if(s < 10){
+            seconds ="0"+s;
+        }else{
+            seconds = ""+s;
+        }
+
+        return hour+":"+minute+":"+seconds+pre;
     }
 
     public boolean isDrawerOpen() {
@@ -184,25 +241,19 @@ public class TimingDrawerLeft extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public void selectItem(int position) {
-        mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
-        }
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mFragmentContainerView);
-        }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
-    }
-
     public void openLeftDrawer(){
         mDrawerLayout.openDrawer(Gravity.END);
     }
 
     public void closeLeftDrawer(){
         mDrawerLayout.closeDrawers();
+    }
+
+    public void startChrono(){
+        a.setToNow();
+        time.setText(a.format("%H:%M:%S"));
+
+        tick.start();
     }
 
     @Override
@@ -224,7 +275,6 @@ public class TimingDrawerLeft extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override

@@ -153,4 +153,9 @@ public class Startgroup extends Group {
     public int getCount() {
         return sportsmens.size();
     }
+
+    @Override
+    public String toString(){
+        return getId()+"";
+    }
 }

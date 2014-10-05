@@ -14,13 +14,14 @@ public class Startlist {
     int startId;
     int sportsmenId;
     int startposition;
+    int difference;
     ArrayList<Startgroup> startgroups;
 
     public Startlist(){
 
     }
 
-    public Startlist(int id, int number, boolean jersey, int compId, int startId, int sportsmenId, int startposition) {
+    public Startlist(int id, int number, boolean jersey, int startposition, int compId, int startId, int sportsmenId, int difference) {
         this.id = id;
         this.number = number;
         this.jersey = jersey;
@@ -28,6 +29,7 @@ public class Startlist {
         this.startId = startId;
         this.sportsmenId = sportsmenId;
         this.startposition = startposition;
+        this.difference = difference;
     }
 
     public int getId() {
@@ -92,5 +94,18 @@ public class Startlist {
 
     public void setStartgroups(ArrayList<Startgroup> startgroups) {
         this.startgroups = startgroups;
+    }
+
+    public int getDifference() {
+        return difference;
+    }
+
+    public void setDifference(int difference) {
+        this.difference = difference;
+    }
+
+    @Override
+    public String toString(){
+        return getId()+"";
     }
 }

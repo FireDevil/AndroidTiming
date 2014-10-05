@@ -9,16 +9,9 @@ import android.widget.Chronometer;
 import android.widget.Chronometer.OnChronometerTickListener;
 import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 public class clockMap extends Activity {
 
-    Calendar cal;
-    long t = 0;
     long r = 0;
-    SimpleDateFormat sdf;
-    SimpleDateFormat sd;
     TextView time;
     TextView span;
     TextView ref;

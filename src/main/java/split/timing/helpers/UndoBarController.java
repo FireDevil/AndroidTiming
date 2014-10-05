@@ -61,13 +61,13 @@ public class UndoBarController {
 
         mBarView.setVisibility(View.VISIBLE);
         if (immediate) {
-            mBarView.setAlpha(1);
+            mBarView.setAlpha(0);
         } else {
-            mBarAnimator.cancel();
-            mBarAnimator
-                    .alpha(1)
-                    .setDuration(500)
-                    .setListener(null);
+//            mBarAnimator.cancel();
+            mBarView.animate().alpha(0)
+            .setDuration(500)
+            .translationY(-180)
+            .setListener(null);
         }
     }
 
@@ -75,16 +75,13 @@ public class UndoBarController {
         mHideHandler.removeCallbacks(mHideRunnable);
         if (immediate) {
             mBarView.setVisibility(View.GONE);
-            mBarView.setAlpha(0);
             mUndoMessage = null;
             mUndoToken = null;
 
         } else {
-            mBarAnimator.cancel();
-            mBarAnimator
-                    .alpha(0)
-                    .setDuration(mBarView.getResources()
-                            .getInteger(android.R.integer.config_shortAnimTime))
+            mBarView.animate()
+                    .translationY(200)
+                    .setDuration(500)
                     .setListener(new AnimatorListenerAdapter() {
                         @Override
                         public void onAnimationEnd(Animator animation) {

@@ -91,8 +91,6 @@ public class CompetitionEditDialog extends DialogFragment{
                 Calendar cald = Calendar.getInstance();
                 //noinspection ResourceType
                 cald.set(year, month, day);
-                picker.setMinDate(cald.getTimeInMillis() - 1000);
-
                 picker.updateDate(year, month, day);
             }
         }
@@ -103,7 +101,7 @@ public class CompetitionEditDialog extends DialogFragment{
     private boolean saveCompetition(){
         String cName="";
         String cLocation="";
-        String cDate=picker.getDayOfMonth()+"."+picker.getMonth()+"."+picker.getYear();
+        String cDate=picker.getDayOfMonth()+"."+(picker.getMonth()+1)+"."+picker.getYear();
 
         if(name.getText().toString().equals("")){
             Toast.makeText(getActivity(), "A name would be helpful, thanks", Toast.LENGTH_SHORT).show();

@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingLeft="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_vertical_margin"
     tools:context=".items.StartgroupEditFragment">
@@ -9,6 +9,7 @@
 
     <ScrollView
         android:id="@+id/scrollView"
+        android:isScrollContainer="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="80dp"
@@ -33,7 +34,8 @@
                     android:layout_weight="0.75"
                     android:gravity="left"
                     android:text="Name: "
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
                 <EditText
                     android:id="@+id/startlist_name_edit"
@@ -45,14 +47,14 @@
                     android:hint="New York Marathon"
                     android:inputType="textPersonName"
                     android:paddingLeft="8dp"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:nextFocusDown="@+id/startlist_distance_edit"/>
             </TableRow>
 
             <TableRow
                 android:id="@+id/startlist_distance_row"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/activity_horizontal_margin">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="0dip"
@@ -66,19 +68,19 @@
                     android:id="@+id/startlist_distance_edit"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:background="@drawable/edittext_red"
                     android:ems="10"
                     android:hint="7.5"
                     android:inputType="number|numberDecimal"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:nextFocusDown="@+id/startlist_interval_edit"/>
             </TableRow>
 
             <TableRow
                 android:id="@+id/startlist_interval_row"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/activity_horizontal_margin">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="0dip"
@@ -92,14 +94,14 @@
                     android:id="@+id/startlist_interval_edit"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
+                    android:layout_weight="1"
                     android:background="@drawable/edittext_red"
                     android:digits="0123456789"
                     android:hint="30"
+                    android:ems="10"
                     android:inputType="numberSigned"
-                    android:nextFocusDown="@+id/rangestart_edit"
-                    android:nextFocusRight="@+id/rangestart_edit"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:nextFocusDown="@+id/rangestart_edit"/>
 
             </TableRow>
 
@@ -114,24 +116,24 @@
 
                 <TextView
                     android:id="@+id/addGroup_rangelabel"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dip"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="range:"
+                    android:layout_weight="0.75"
+                    android:gravity="left"
+                    android:text="First Number:"
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <EditText
                     android:id="@+id/rangestart_edit"
-                    android:layout_width="100dp"
+                    android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:background="@drawable/edittext_red"
+                    android:digits="0123456789"
+                    android:hint="25"
                     android:ems="10"
-                    android:focusable="true"
-                    android:hint="1"
-                    android:inputType="number"
+                    android:inputType="numberSigned"
                     android:nextFocusDown="@+id/rangend_edit"
-                    android:nextFocusRight="@+id/rangend_edit"
                     android:textSize="20sp" />
 
 

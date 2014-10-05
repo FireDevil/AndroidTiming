@@ -2,12 +2,11 @@ package split.timing;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +17,10 @@ import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TableRow;
-import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import split.timing.helpers.CircleButton;
@@ -92,12 +90,17 @@ public class StartgroupEditDialog extends DialogFragment {
         hourPicker = (NumberPicker) rootView.findViewById(R.id.numberPicker);
         hourPicker.setMinValue(0);
         hourPicker.setMaxValue(23);
+        setNumberPickerTextColor(hourPicker);
+
         minutePicker = (NumberPicker) rootView.findViewById(R.id.numberPicker2);
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(59);
+        setNumberPickerTextColor(minutePicker);
+
         secondPicker = (NumberPicker) rootView.findViewById(R.id.numberPicker3);
         secondPicker.setMinValue(0);
-        secondPicker.setMaxValue(1);
+        secondPicker.setMaxValue(59);
+        setNumberPickerTextColor(secondPicker);
 
         Calendar calendar = Calendar.getInstance();
 
@@ -113,6 +116,20 @@ public class StartgroupEditDialog extends DialogFragment {
                 if (oldVal == 0 && newVal == 59) {
                     hourPicker.setValue(hourPicker.getValue() - 1);
                 }
+            }
+        });
+        secondPicker.setValue(0);
+        secondPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                if (oldVal == 59 && newVal == 0) {
+                    minutePicker.setValue(minutePicker.getValue() + 1);
+                }
+
+                if (oldVal == 0 && newVal == 59) {
+                    minutePicker.setValue(minutePicker.getValue() - 1);
+                }
+
             }
         });
 
@@ -166,32 +183,6 @@ public class StartgroupEditDialog extends DialogFragment {
             dbHelper.close();
         }
 
-        interval.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-
-
-                ArrayList<Integer> list = new ArrayList<Integer>();
-
-                int counter = 0;
-                int time = 0;
-                int intervalTime = Integer.parseInt(v.getText().toString());
-                while (counter * intervalTime > 60) {
-                    list.add(counter * intervalTime);
-                    counter++;
-                }
-
-                Log.e("##", (v.getText().toString()));
-
-                secondPicker.setDisplayedValues(list.toArray(new String[list.size()]));
-                return false;
-            }
-        });
-
-
-        if (intervals.length == 0) {
-            secondPicker.setDisplayedValues(new String[]{"0", "30"});
-        }
 
         /*LayerDrawable bgDrawable = (LayerDrawable) rootView.getBackground();
         GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.card_border);
@@ -302,6 +293,25 @@ public class StartgroupEditDialog extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+    }
+
+    public void setNumberPickerTextColor(NumberPicker numberPicker){
+            Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+            for (Field pf : pickerFields) {
+                if (pf.getName().equals("mSelectionDivider")) {
+                    pf.setAccessible(true);
+                    try {
+                        pf.set(numberPicker,getResources().getDrawable(android.R.color.holo_red_dark) );
+                    } catch (IllegalArgumentException e) {
+                        e.printStackTrace();
+                    } catch (Resources.NotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                }
+            }
     }
 
     private Callbacks mCallbacks = sCallbacks;
