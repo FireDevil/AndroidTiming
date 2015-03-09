@@ -2,6 +2,7 @@ package split.timing;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -10,9 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.DatePicker;
+import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import split.timing.helpers.CircleButton;
@@ -67,6 +71,7 @@ public class CompetitionEditDialog extends DialogFragment{
                     }
             }
         });
+
 
         if(compId > -1) {
             DBHelper db = new DBHelper();

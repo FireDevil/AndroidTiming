@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">AndroidTiming</string>
+    <string name="app_name">Sports Timing</string>
     <string name="title_section1">Section 1</string>
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
@@ -34,5 +34,10 @@
     <string name="title_activity_startgroup__dialog_">Startgroup_Dialog_Activity</string>
     <string name="title_activity_startgroup__dialog">Startgroup_Dialog</string>
     <string name="title_activity_timing">Timing</string>
+    <string name="noNumber">no Number</string>
+    <string name="noGroup">no Group</string>
+    <string name="empty_time">Empty Timeset</string>
+    <string name="number_required">A number is required. Otherwise delete the entry.\n(00 for unknown number)</string>
+    <string name="lap_indicator">L:</string>
 
 </resources>

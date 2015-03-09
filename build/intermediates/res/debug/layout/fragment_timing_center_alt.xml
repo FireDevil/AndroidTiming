@@ -1,0 +1,127 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_vertical_margin">
+
+    <TextView
+        android:id="@+id/timing_numberlabel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="150sp"
+        android:paddingTop="24dp"
+        android:textColor="@color/transparent_orange"
+        android:text="X"/>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="12dp"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/timing_text_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:elevation="8dp">
+
+
+            <MultiAutoCompleteTextView
+                android:id="@+id/timing_center_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:background="@drawable/edittext_dark_green"
+                android:enabled="true"
+                android:gravity="center|bottom"
+                android:hint=""
+                android:imeActionLabel="Set Time"
+                android:imeOptions="actionSend"
+                android:inputType="number"
+                android:maxEms="4"
+                android:maxLength="4"
+                android:singleLine="true"
+                android:textSize="30sp" />
+        </android.support.v7.widget.CardView>
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:paddingTop="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/widget37"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="4dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/timing_poslabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textSize="30dp"
+                    android:textAppearance="?android:attr/textAppearanceSmallPopupMenu"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="Derzeit gibt es"/>
+
+                <TextView
+                    android:id="@+id/timing_timelabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="noch keine Daten"
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textSize="30dp"
+                    android:textAppearance="?android:attr/textAppearanceSmallPopupMenu" />
+
+                <TextView
+                    android:id="@+id/timing_frontlabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=""
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textSize="30dp"
+                    android:textAppearance="?android:attr/textAppearanceSmallPopupMenu" />
+
+                <TextView
+                    android:id="@+id/timing_backlabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text=""
+                    android:singleLine="true"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:textSize="30dp"
+                    android:textAppearance="?android:attr/textAppearanceSmallPopupMenu" />
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/timing_input_set_btn"
+        android:layout_width="@dimen/slide_up_panel_height"
+        android:layout_height="@dimen/slide_up_panel_height"
+        android:layout_gravity="center|right"
+        android:background="@drawable/ripple"
+        android:src="@drawable/ic_alarm_add_white_24dp"
+        app:cb_color="@color/gruen"
+        app:cb_pressed_ring_width="1dip" />
+
+</FrameLayout>
+
+
+<!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/fragment_timing_center_alt.xml -->

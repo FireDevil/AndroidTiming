@@ -55,7 +55,7 @@ public class StartgroupAddDialog extends DialogFragment {
         this.competitionId = competitionId;
 
         while (c.moveToNext()) {
-            Startgroup tmp = new Startgroup(c.getInt(0), c.getString(1), c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5),c.getFloat(6), c.getInt(7),c.getInt(8),c.getInt(9));
+            Startgroup tmp = new Startgroup(c.getInt(0), c.getString(1), c.getInt(2), c.getInt(3), c.getInt(4), c.getInt(5),c.getFloat(6), c.getInt(7),c.getInt(8));
             boolean existing = false;
 
             for (Startgroup sg : startgroups) {

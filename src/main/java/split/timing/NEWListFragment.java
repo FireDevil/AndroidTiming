@@ -52,7 +52,7 @@ public class NEWListFragment extends Fragment implements
      * The fragment's current callback object, which is notified of list item
      * clicks.
      */
-    private Callbacks mCallbacks = sDummyCallbacks;
+    private Callbacks mCallbacks = sCallbacks;
 
     /**
      * A callback interface that all activities containing this fragment must
@@ -74,39 +74,47 @@ public class NEWListFragment extends Fragment implements
         public void onCompetitionSelected(int id);
 
         public void callCompetitionEditDialog(int competition);
+
+        public void callTimingActivity(int competitionId);
+
+        public void selectNavigationDrawerItem(int position);
     }
 
     /**
      * A dummy implementation of the {@link Callbacks} interface that does
      * nothing. Used only when this fragment is not attached to an activity.
      */
-    private static Callbacks sDummyCallbacks = new Callbacks() {
+    private static Callbacks sCallbacks = new Callbacks() {
         @Override
         public void onGroupSelected(int id) {
         }
 
         @Override
         public void onSportsSelected(int id) {
-
         }
 
         @Override
         public void onListSelected(int id) {
-
         }
 
         @Override
         public void onResultSelected(int id) {
-
         }
 
         @Override
         public void onCompetitionSelected(int id) {
-
         }
 
         @Override
         public void callCompetitionEditDialog(int competition) {
+        }
+
+        @Override
+        public void callTimingActivity(int competitionId) {
+        }
+
+        @Override
+        public void selectNavigationDrawerItem(int position) {
 
         }
     };
@@ -139,6 +147,7 @@ public class NEWListFragment extends Fragment implements
     String[] sortList;
 
     Controller controller = Controller.getInstance();
+    UndoBarController mUndoBarController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -172,6 +181,7 @@ public class NEWListFragment extends Fragment implements
 
         if (mArgs.containsKey("Sports")) {
 
+            mCallbacks.selectNavigationDrawerItem(1);
             sortList = new String[]{"_id", "name", "lastname", "age", "club", "federation"};
 
             c = db.select("SELECT * FROM Sportsmen");
@@ -182,6 +192,9 @@ public class NEWListFragment extends Fragment implements
 
             while (c.moveToNext()) {
 
+                if(c.getInt(0) ==0){
+                    continue;
+                }
 
                 mData.add(new Sportsmen(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4), c.getInt(5), c.getString(6), c.getString(7)));
                 backUpList.add(new Sportsmen(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4), c.getInt(5), c.getString(6), c.getString(7)));
@@ -197,6 +210,7 @@ public class NEWListFragment extends Fragment implements
                 }
             });
 
+            cb.setVisibility(View.VISIBLE);
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -222,6 +236,7 @@ public class NEWListFragment extends Fragment implements
 
             }
 
+            cb.setVisibility(View.VISIBLE);
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -282,6 +297,7 @@ public class NEWListFragment extends Fragment implements
                 backUpList.add(new Competition(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4)));
             }
 
+            cb.setVisibility(View.VISIBLE);
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -297,10 +313,39 @@ public class NEWListFragment extends Fragment implements
             });
         }
 
+        if(mArgs.containsKey("Timing")){
+            sortList = new String[]{"_id", "name", "location"};
+
+            top.setText("Start timing for a competition");
+            c = db.select("SELECT * FROM Competition WHERE finished=" + 0);
+
+            mData = new ArrayList<Competition>();
+            backUpList = new ArrayList<Competition>();
+            listMode = 3;
+
+            while (c.moveToNext()) {
+                mData.add(new Competition(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4)));
+                backUpList.add(new Competition(c.getInt(0), c.getString(1), c.getString(2), c.getString(3), c.getInt(4)));
+            }
+
+            cb.setVisibility(View.GONE);
+
+            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    if(mData.get(0) instanceof Competition){
+                        controller.setCompetitions(mData);
+                    }
+                    controller.setSelectedCompetition(((Competition)mData.get(i)).getId());
+                    mCallbacks.callTimingActivity(((Competition) mData.get(i)).getId());
+                }
+            });
+        }
+
         adapter = new CustomArrayAdapter(getActivity(), R.layout.startlist_element, mData, listMode);
         lv.setAdapter(adapter);
 
-        final UndoBarController finalMUndoBarController = new UndoBarController(rootView.findViewById(R.id.undobar), this);
+        mUndoBarController = new UndoBarController(rootView.findViewById(R.id.undobar), this);
         final SwipeToDismissListener touchListener =
                 new SwipeToDismissListener(
                         lv,
@@ -316,7 +361,7 @@ public class NEWListFragment extends Fragment implements
 
                                 for (int position : reverseSortedPositions) {
                                     backUpPosition = position;
-                                    finalMUndoBarController.showUndoBar(
+                                    mUndoBarController.showUndoBar(
                                             false,
                                             mData.get(position).toString(),
                                             null);
@@ -362,22 +407,14 @@ public class NEWListFragment extends Fragment implements
         super.onDetach();
         deleteOnDismiss();
 
-        if(mData.get(0) instanceof Competition){
-            controller.setCompetitions(mData);
-        }
-
         // Reset the active callbacks interface to the dummy implementation.
-        mCallbacks = sDummyCallbacks;
+        mCallbacks = sCallbacks;
     }
 
     @Override
     public void onPause() {
         super.onPause();
         deleteOnDismiss();
-
-        if(mData.size() > 0 && mData.get(0) instanceof Competition){
-            controller.setCompetitions(mData);
-        }
     }
 
 
@@ -428,7 +465,7 @@ public class NEWListFragment extends Fragment implements
 
                         switch (sortOrder) {
                             case 0:
-                                item.setIcon(android.R.drawable.ic_menu_sort_by_size);
+                                item.setIcon(R.drawable.ic_sort_white_48dp);
                                 break;
                             case 1:
                                 item.setIcon(R.drawable.ic_action_sort_by_size_name);
@@ -464,7 +501,7 @@ public class NEWListFragment extends Fragment implements
 
                         switch (sortOrder) {
                             case 0:
-                                item.setIcon(android.R.drawable.ic_menu_sort_by_size);
+                                item.setIcon(R.drawable.ic_sort_white_48dp);
                                 break;
                             case 1:
                                 item.setIcon(R.drawable.ic_action_sort_by_size_name);

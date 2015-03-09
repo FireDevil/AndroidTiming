@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@color/transparent_gruen">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="8dp">
+
+
+            <FrameLayout
+                android:layout_width="@dimen/slide_up_panel_height"
+                android:layout_height="@dimen/slide_up_panel_height"
+                android:layout_gravity="center"
+                android:animateLayoutChanges="true">
+
+                <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/result_dialog_btn"
+                    android:layout_width="@dimen/slide_up_panel_height"
+                    android:layout_height="@dimen/slide_up_panel_height"
+                    app:cb_color="@color/orange"
+                    app:cb_pressed_ring_width="0dip" />
+
+                <TextView
+                    android:id="@+id/result_dialog_position"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="X"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/black"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
+
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/orange"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Medium Text"
+                    android:gravity="left"
+                    android:id="@+id/result_dialog_number" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/result_dialog_trikot"
+                    android:src="@drawable/trikot_rot"
+                    android:layout_weight="0.5" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="right"
+                    android:id="@+id/result_dialog_difference" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="left"
+                    android:id="@+id/result_dialog_groupname" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="right"
+                    android:id="@+id/result_dialog_run" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="left"
+                    android:id="@+id/result_dialog_info" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="right"
+                    android:id="@+id/result_dialog_timed" />
+            </TableRow>
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/orange"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp">
+
+            <TextView
+                android:id="@+id/result_dialog_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/result_dialog_club"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/result_dialog_federation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/timing_result_detail_dialog.xml -->

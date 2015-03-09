@@ -5,8 +5,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -76,7 +78,7 @@ public class SportsFragment extends Fragment {
                     return false;
                 }else{
 
-                    String birthday = dpView.getDayOfMonth()+"."+dpView.getMonth();
+                    String birthday = dpView.getDayOfMonth()+"."+(dpView.getMonth()+1);
 
                     Calendar cal = Calendar.getInstance();
                     int y = cal.get(Calendar.YEAR);
@@ -158,11 +160,24 @@ public class SportsFragment extends Fragment {
         fed = (EditText)rootView.findViewById(R.id.sports_federation_edit);
 
         dpView = (DatePicker) rootView.findViewById(R.id.sports_datePicker);
+
+        dpView.setCalendarViewShown(false);
+        dpView.setSpinnersShown(true);
+
         LinearLayout llFirst = (LinearLayout) dpView.getChildAt(0);
         LinearLayout llSecond = (LinearLayout) llFirst.getChildAt(0);
         for (int i = 0; i < llSecond.getChildCount(); i++) {
-            NumberPicker picker = (NumberPicker) llSecond.getChildAt(i); // Numberpickers in llSecond
-            // reflection - picker.setDividerDrawable(divider); << didn't seem to work.
+
+            NumberPicker picker;
+
+            if(llSecond.getChildAt(i) instanceof NumberPicker ){
+                picker = (NumberPicker) llSecond.getChildAt(i); // Numberpickers in llSecond
+                // reflection - picker.setDividerDrawable(divider); << didn't seem to work.
+            }else{
+                continue;
+            }
+
+
             Field[] pickerFields = NumberPicker.class.getDeclaredFields();
             for (Field pf : pickerFields) {
                 if (pf.getName().equals("mSelectionDivider")) {
@@ -197,7 +212,7 @@ public class SportsFragment extends Fragment {
                 if (!c.getString(3).equals("")) {
                     try {
                         day = Integer.parseInt(c.getString(3).substring(0, c.getString(3).indexOf(".")));
-                        month = Integer.parseInt(c.getString(3).substring(c.getString(3).indexOf(".") + 1, c.getString(3).length()));
+                        month = Integer.parseInt(c.getString(3).substring(c.getString(3).indexOf(".") + 1, c.getString(3).length()))-1;
                     } catch (NumberFormatException nfe) {
                         day = 1;
                         month = 0;
@@ -223,13 +238,13 @@ public class SportsFragment extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            //mListener = (OnDialogInteractionListener) activity;
+            mCallbacks = (Callbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnDialogInteractionListener");
         }
 
-        mCallbacks = (Callbacks) activity;
+
     }
 
     @Override

@@ -23,7 +23,7 @@ public class Startgroup extends Group {
 
     }
 
-    public Startgroup(int id, String name, int startHour, int startMinute, int startSecond, int mode, float distance, int interval, int num, int jerseyNum) {
+    public Startgroup(int id, String name, int startHour, int startMinute, int startSecond, int mode, float distance, int interval, int num) {
         this.id = id;
         this.name = name;
         this.startHour = startHour;
@@ -33,29 +33,29 @@ public class Startgroup extends Group {
         this.interval = interval;
         this.startNum = num;
         this.startSecond = startSecond;
-        setJerseyNum(jerseyNum);
+//        setJerseyNum(jerseyNum);
         this.sportsmens = new ArrayList<Sportsmen>();
     }
 
-    public void add(ArrayList<Sportsmen> additional) {
-        if (additional != null) {
-            this.sportsmens.addAll(additional);
-        }
-    }
-
-    public void add(Sportsmen single) {
-        this.sportsmens.add(single);
-    }
-
-    public void add(int emptyAdditional) {
-        Sportsmen men;
-        for (int i = 0; i < emptyAdditional; i++) {
-            men = new Sportsmen();
-            men.setName("Starter " + getCount());
-            men.setLastName("#");
-            this.sportsmens.add(men);
-        }
-    }
+//    public void add(ArrayList<Sportsmen> additional) {
+//        if (additional != null) {
+//            this.sportsmens.addAll(additional);
+//        }
+//    }
+//
+//    public void add(Sportsmen single) {
+//        this.sportsmens.add(single);
+//    }
+//
+//    public void add(int emptyAdditional) {
+//        Sportsmen men;
+//        for (int i = 0; i < emptyAdditional; i++) {
+//            men = new Sportsmen();
+//            men.setName("Starter " + getCount());
+//            men.setLastName("#");
+//            this.sportsmens.add(men);
+//        }
+//    }
 
     public int getInterval() {
         return interval;
@@ -129,17 +129,17 @@ public class Startgroup extends Group {
         this.startNum = startNum;
     }
 
-    public int getJerseyNum() {
-        return jerseyNum;
-    }
-
-    public void setJerseyNum(int jerseyNum) {
-        if (jerseyNum < startNum && jerseyNum >= 0) {
-            this.jerseyNum = startNum;
-        } else {
-            this.jerseyNum = jerseyNum;
-        }
-    }
+//    public int getJerseyNum() {
+//        return jerseyNum;
+//    }
+//
+//    public void setJerseyNum(int jerseyNum) {
+//        if (jerseyNum < startNum && jerseyNum >= 0) {
+//            this.jerseyNum = startNum;
+//        } else {
+//            this.jerseyNum = jerseyNum;
+//        }
+//    }
 
     public int getStartSecond() {
         return startSecond;

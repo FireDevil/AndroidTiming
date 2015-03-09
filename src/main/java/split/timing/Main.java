@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import split.timing.helpers.ColorSetter;
 import split.timing.helpers.DBHelper;
 import split.timing.helpers.DialogArrayAdapter;
 import split.timing.items.Competition;
@@ -79,6 +81,8 @@ public class Main extends FragmentActivity implements
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         mNavigationDrawerFragment.selectItem(mCurrentSelectedPosition);
 
+        getActionBar().setBackgroundDrawable(new ColorDrawable(ColorSetter.newInstance(1)));
+
 
     }
 
@@ -136,8 +140,15 @@ public class Main extends FragmentActivity implements
                 break;
 
             case 4:
-                Intent in = new Intent(this, Timing.class);
-                startActivity(in);
+                frag = new NEWListFragment();
+                args = new Bundle();
+                args.putString("Timing", "");
+                frag.setArguments(args);
+                fragmentManager
+                        .beginTransaction()
+                        .replace(R.id.container, frag)
+                        .addToBackStack(null)
+                        .commit();
                 break;
         }
 
@@ -163,6 +174,15 @@ public class Main extends FragmentActivity implements
         // as you specify a parent activity in AndroidManifest.xml.
 
         int id = item.getItemId();
+
+        if(id == android.R.id.home){
+            if(mNavigationDrawerFragment.isDrawerOpen()) {
+                mNavigationDrawerFragment.closeDrawer();
+            }else {
+                mNavigationDrawerFragment.openDrawer();
+            }
+        }
+
         return id == R.id.action_settings || super.onOptionsItemSelected(item);
     }
 
@@ -412,6 +432,18 @@ public class Main extends FragmentActivity implements
 
         CompetitionEditDialog newDialog = CompetitionEditDialog.newInstance(competition);
         newDialog.show(ft, "editDialog");
+    }
+
+    @Override
+    public void callTimingActivity(int competitionId) {
+        Intent in = new Intent(this, TimingActivity.class);
+        in.putExtra("Competition",competitionId);
+        startActivity(in);
+    }
+
+    @Override
+    public void selectNavigationDrawerItem(int position) {
+        mNavigationDrawerFragment.highlightItem(position);
     }
 
     @Override

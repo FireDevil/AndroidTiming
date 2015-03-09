@@ -80,10 +80,10 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:background="@drawable/card"
-                android:calendarViewShown="false"
                 android:padding="4dp"
-                android:spinnersShown="true"
-                android:startYear="1950" />
+                android:datePickerMode="spinner"
+                android:startYear="1950"
+                android:elevation="4dp" />
 
             <TableRow
                 android:layout_width="fill_parent"

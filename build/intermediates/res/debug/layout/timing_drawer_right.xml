@@ -1,10 +1,51 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:choiceMode="singleChoice"
-    android:divider="@android:color/transparent"
-    android:dividerHeight="0dp"
-    android:background="#cccc"
-    tools:context="split.timing.NavigationDrawerFragment" />
-<!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/timing_drawer_right.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/white"
+    android:animateLayoutChanges="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:animateLayoutChanges="true">
+
+        <ListView
+            android:id="@+id/timing_drawer_right_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:clipToPadding="false"
+            android:dividerHeight="1dp"
+            android:divider="@android:color/darker_gray"
+            android:fastScrollEnabled="true"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/darker_gray"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="no starters timed yet"
+            android:visibility="invisible"
+            android:id="@+id/timing_drawer_right_default_text" />
+
+        <LinearLayout
+            android:id="@+id/timing_drawer_right_undobar"
+            style="@style/UndoBar"
+            android:layout_marginBottom="-50dp">
+
+            <TextView
+                android:id="@+id/undobar_message"
+                style="@style/UndoBarMessage" />
+
+            <Button
+                android:id="@+id/undobar_button"
+                style="@style/UndoBarButton" />
+        </LinearLayout>
+
+
+    </FrameLayout>
+</LinearLayout><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/timing_drawer_right.xml -->

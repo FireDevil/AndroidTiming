@@ -1,0 +1,11 @@
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\classes\debug
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-44529595d9e0541067c74f7ecdaba7d695fbc2fc.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\support-annotations-21.0.3-7032412b36f8d0f5d20b4d70f658807a9c703ef4.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-aed389626006ce3431a22678a20ffc2a0b554d3b.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-6b2f15cfd8f4f3992518de9840f92ce7268257ab.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-bd835d66305f8b26b9b1f203259f216073d31bb8.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\library-2.4.0-354f2e806ec50d5de188849736761d26707a6583.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\internal_impl-21.0.3-482facfb21701738a67616cc68f1d92a18ba6490.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-866006537aed63653353ac5cadb16b79636e29e4.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-847e22a13b1b9b0f51a176bb604db34af5840509.jar
+C:\Users\Antec\SkyDrive\Android\AndroidTiming\AndroidTiming\build\intermediates\pre-dexed\debug\classes-598b26341350936d2f82ad500013a29e227d5d36.jar

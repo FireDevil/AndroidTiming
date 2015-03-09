@@ -1,8 +1,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="split.timing.Timing" >
-    <item android:id="@+id/action_example"
-        android:title="@string/action_example"
-        android:showAsAction="withText|ifRoom" />
+    tools:context="split.timing.TimingActivity">
+
+    <item
+        android:id="@+id/timing_alt_layout"
+        android:icon="@drawable/ic_flip_to_back_white_48dp"
+        android:showAsAction="withText|ifRoom"
+        android:title="Change Layout" />
+
+    <item
+        android:id="@+id/timing_stop"
+        android:icon="@drawable/ic_stop_white_48dp"
+        android:showAsAction="withText|ifRoom"
+        android:title="Stop Timing" />
+
+
+    <item
+        android:id="@+id/timing_startlist_list"
+        android:icon="@drawable/ic_format_list_numbered_white_48dp"
+        android:showAsAction="never"
+        android:title="Startlist" />
+
+    <item
+        android:id="@+id/timing_timed_list"
+        android:icon="@drawable/ic_format_list_bulleted_white_48dp"
+        android:showAsAction="never"
+        android:title="Timedlist" />
+
 </menu>

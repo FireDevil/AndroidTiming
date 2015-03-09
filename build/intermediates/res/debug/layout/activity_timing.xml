@@ -5,87 +5,145 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="?android:actionBarSize"
-    tools:context="split.timing.Timing">
+    android:animateLayoutChanges="true"
+    tools:context="split.timing.TimingActivity">
 
     <com.sothree.slidinguppanel.SlidingUpPanelLayout xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:dragView="@+id/slideUpImageView"
-        sothree:overlay="true"
-        sothree:panelHeight="@dimen/slide_up_panel_height"
-        sothree:shadowHeight="8dp">
-
+        sothree:umanoDragView="@+id/slideUpImageView"
+        sothree:umanoOverlay="true"
+        sothree:umanoPanelHeight="@dimen/slide_up_panel_height"
+        sothree:umanoShadowHeight="8dp"
+        android:background="@android:color/white">
 
         <!-- As the main content view, the view below consumes the entire
              space available using match_parent in both dimensions. -->
         <FrameLayout
             android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/slide_up_panel_height">
+
+        </FrameLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:background="@android:color/transparent"
+            android:orientation="vertical">
 
-            <TableRow
-                android:layout_width="fill_parent"
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/slide_up_panel_height"
-                android:layout_gravity="top"
-                android:animateLayoutChanges="true">
+                android:animateLayoutChanges="true"
+                android:background="@android:color/white"
+                android:focusable="false"
+                android:focusableInTouchMode="false">
 
-                <TextView
-                    android:id="@+id/slideUpText"
-                    android:layout_width="0dip"
-                    android:layout_height="match_parent"
-                    android:layout_weight="8"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:freezesText="true"
-                    android:text="qwertzuiopüasdfghjklöäyxcvbnm || qwertzuiopüasdfghjklöäyxcvbnm"
-                    android:textSize="24sp" />
+                <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                <split.timing.helpers.CircleButton
-                    xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/slideUpCircleButton"
-                    android:layout_width="0dip"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:layout_gravity="center"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:src="@drawable/ic_action_up"
-                    app:cb_color="@android:color/holo_orange_dark"
-                    app:cb_pressed_ring_width="2dip" />
+                    <FrameLayout
+                        android:layout_width="@dimen/slide_up_panel_height"
+                        android:layout_height="@dimen/slide_up_panel_height"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginLeft="12dp"
+                        android:layout_gravity="right"
+                        android:animateLayoutChanges="true">
 
-            </TableRow>
+                        <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/timing_position_btn"
+                            android:layout_width="@dimen/slide_up_panel_height"
+                            android:layout_height="@dimen/slide_up_panel_height"
+                            app:cb_color="@color/transparent_gruen"
+                            app:cb_pressed_ring_width="0dip" />
 
+                        <TextView
+                            android:id="@+id/slideup_position"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="X"
+                            android:singleLine="true"
+                            android:marqueeRepeatLimit="marquee_forever"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:textColor="@color/orange"
+                            android:textSize="35sp"
+                            android:textStyle="bold" />
+
+                    </FrameLayout>
+
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="2"
+                        android:layout_height="fill_parent"
+                        android:paddingLeft="8dp"
+                        android:paddingBottom="4dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceMedium"
+                            android:text="No time set"
+                            android:singleLine="true"
+                            android:id="@+id/slideup_name"
+                            android:textColor="@android:color/black"
+                            android:textSize="22sp"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textSize="16sp"
+                            android:id="@+id/slideup_difference"
+                            android:layout_weight="1" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:singleLine="true"
+                            android:text=""
+                            android:textSize="16sp"
+                            android:id="@+id/slideup_time"
+                            android:layout_weight="1" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="0dip"
+                        android:layout_weight="0.7"
+                        android:layout_height="match_parent"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:text="--"
+                        android:id="@+id/slideup_number"
+                        android:textColor="@color/gruen"
+                        android:textSize="30sp"
+                        android:textStyle="bold"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+            </FrameLayout>
 
             <FrameLayout
                 android:id="@+id/slideUpContainer"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:background="@android:color/white"/>
         </LinearLayout>
 
-
-        <!-- android:layout_gravity="start" tells DrawerLayout to treat
-             this as a sliding drawer on the left side for left-to-right
-             languages and on the right side for right-to-left languages.
-             If you're not building against API 17 or higher, use
-             android:layout_gravity="left" instead. -->
-        <!-- The drawer is given a fixed width in dp and extends the full height of
-             the container. -->
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 

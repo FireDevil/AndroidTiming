@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="4dp">
+
+    <TextView
+        android:layout_width="0dip"
+        android:layout_weight="0.7"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="--"
+        android:id="@+id/timing_result_item_position"
+        android:textColor="@color/orange"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="0dip"
+        android:layout_weight="2"
+        android:layout_height="fill_parent"
+        android:paddingLeft="8dp">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/timing_result_item_name"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"
+                android:gravity="left" />
+
+            <ImageView
+                android:layout_width="0dip"
+                android:layout_weight="0.5"
+                android:layout_height="match_parent"
+                android:src="@drawable/trikot_rot"
+                android:id="@+id/timing_result_item_trikot" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/timing_result_item_difference"
+                android:textColor="@android:color/black"
+                android:layout_weight="1"
+                android:gravity="right" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="0dip"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/timing_result_item_number"
+                android:layout_weight="1"
+                android:gravity="left" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Small Text"
+                android:id="@+id/timing_result_item_info"
+                android:layout_weight="1"
+                android:gravity="right" />
+        </TableRow>
+
+    </LinearLayout>
+
+</LinearLayout>

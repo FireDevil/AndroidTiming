@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape>
+            <gradient
+                android:angle="90"
+                android:startColor="@android:color/transparent"
+                android:endColor="@color/gruen"
+                android:type="linear"
+                android:bottom="8dp"
+                />
+        </shape>
+    </item>
+</selector><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/drawable-xxhdpi/timing_result_group_gradient.xml -->

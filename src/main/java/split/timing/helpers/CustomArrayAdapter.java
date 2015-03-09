@@ -46,7 +46,7 @@ public class CustomArrayAdapter extends ArrayAdapter<String> {
     ArrayList mData;
 
     public CustomArrayAdapter(Context context, int layoutViewResourceId,
-                              ArrayList list, int listMode) {
+                               ArrayList list, int listMode) {
         super(context, layoutViewResourceId);
         mData = list;
         mLayoutViewResourceId = layoutViewResourceId;

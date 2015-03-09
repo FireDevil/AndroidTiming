@@ -18,10 +18,19 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Chronometer;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import split.timing.helpers.ColorSetter;
+import split.timing.helpers.Controller;
+import split.timing.helpers.StartlistAdapter;
+import split.timing.helpers.Timer;
+import split.timing.items.Competition;
+import split.timing.items.Startgroup;
+import split.timing.items.Startlist;
 
 /**
  * Created by Antec on 03.06.2014.
@@ -42,7 +51,7 @@ public class TimingDrawerLeft extends Fragment {
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private NavigationDrawerCallbacks mCallbacks;
+    private LeftDrawerCallbacks mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -58,16 +67,27 @@ public class TimingDrawerLeft extends Fragment {
     private boolean mUserLearnedDrawer;
 
     long r = 0;
-    TextView time;
-    TextView span;
     TextView ref;
+    TextView defaulte;
     Chronometer tick;
     Time a;
     Time b;
+    int change = 0;
+    boolean delete = false;
+
+    Competition competition;
+    String date;
+    ArrayList<Startlist> mData;
+
+    StartlistAdapter adapter;
+
+    Controller controller = Controller.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getActionBar().setDisplayHomeAsUpEnabled(false);
 
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
@@ -80,91 +100,119 @@ public class TimingDrawerLeft extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
-//        setHasOptionsMenu(true);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.timing_drawer_left,container,false);
-        mDrawerListView = (ListView) rootView.findViewById(R.id.listView);
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        "Overview",
-                        "Sportsmen",
-                        "Groups",
-                        "Competitions",
-                        "Timing"
-                }
-        ));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                             final Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.timing_drawer_left, container, false);
+        mDrawerListView = (ListView) rootView.findViewById(R.id.timing_drawer_left_listView);
+        mDrawerListView.setVisibility(View.VISIBLE);
 
-        a = new Time();
+        mData = new ArrayList<Startlist>();
 
-        tick = (Chronometer)rootView.findViewById(R.id.chrono);
+        defaulte = (TextView)rootView.findViewById(R.id.timing_drawer_left_default_text);
+        defaulte.setVisibility(View.GONE);
+        ref = (TextView) rootView.findViewById(R.id.timing_drawer_left_chronoText);
+        ref.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            }
+        });
 
-//        time = (TextView)findViewById(R.id.Time);
-//        span = (TextView)findViewById(R.id.Span);
-        ref = (TextView)rootView.findViewById(R.id.chronoText);
 
+        tick = (Chronometer) rootView.findViewById(R.id.timing_drawer_left_chrono);
         tick.setVisibility(View.GONE);
-        tick.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener(){
+        tick.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
 
             @Override
             public void onChronometerTick(Chronometer arg0) {
-                b = new Time();
-                b.setToNow();
-                span.setText(formatTime(a.toMillis(true)+30000,b.toMillis(true)));
-                ref.setText(b.format("%H:%M:%S"));
+
+                if (delete && mData.size() > 0) {
+                    mData.remove(0);
+                    adapter.notifyDataSetChanged();
+                    delete = false;
+                    if(mData.size() > 0) {
+                        b = null;
+                    }
+                }
+
+                if (mData.size() > 0) {
+
+                    Startlist startlist = mData.get(0);
+
+                    if(b == null){
+
+                        Startgroup startgroup = controller.getGroups().get(startlist.getStartId());
+
+                        int difference = startlist.getDifference() + (startgroup.getStartHour() * 3600) + (startgroup.getStartMinute() * 60) + startgroup.getStartSecond();
+                        int hour = difference / 3600;
+                        int minute = (difference % 3600) / 60;
+                        int second = (difference % 3600) % 60;
+
+                        int[] arr = controller.parseDate(date);
+                        int day = arr [0];
+                        if(hour > 23){
+                            day = day + hour/24;
+                            hour = hour%24;
+                        }
+                        int month = arr [1];
+                        int year = arr [2];
+
+                        b = new Time();
+                        b.setToNow();
+                        b.year = year;
+                        b.month = month;
+                        b.monthDay = day;
+                        b.hour = hour;
+                        b.minute = minute;
+                        b.second = second;
+                    }
+
+                    a.setToNow();
+                    String timeText;
+
+                    if (a.before(b)) {
+
+                        if( b.toMillis(true) - a.toMillis(true) < 11000){
+                            ref.setTextColor(ColorSetter.newInstance(2));
+                        }else{
+                            ref.setTextColor(getResources().getColor(android.R.color.white));
+                        }
+
+                        timeText = "-" + Timer.substractTimes(b.toMillis(true), a.toMillis(true)).format("%d:%H:%M:%S");
+
+                    } else {
+
+
+                        timeText = Timer.substractTimes(b.toMillis(true), a.toMillis(true)).format("%d:%H:%M:%S");
+                        ref.setTextColor(ColorSetter.newInstance(1));
+                        change++;
+
+                        if (change >= startlist.getDifference()/2 || startlist.getDifference() < 5) {
+                            delete = true;
+                            change = 0;
+                        }
+                    }
+
+
+                    ref.setText(timeText);
+                } else {
+                    a.setToNow();
+                    ref.setTextColor(getResources().getColor(android.R.color.white));
+
+                    mDrawerListView.setVisibility(View.GONE);
+                    defaulte.setVisibility(View.VISIBLE);
+                    ref.setText(Timer.substractTimes(b.toMillis(true), a.toMillis(true)).format("%d:%H:%M:%S"));
+                }
             }
         });
 
         return rootView;
     }
 
-    public String formatTime(long first, long second){
-
-        long tmp = (second-first)/1000;
-        String pre =" ";
-
-        if(tmp < 0){
-            tmp = - tmp;
-            pre ="-";
-        }
-
-        int m = (int) (tmp / 60)%60;
-        int h = (int) tmp / 3600;
-        int s = (int) tmp % 60;
-
-        String hour="";
-        String minute="";
-        String seconds="";
-
-        if(h < 10){
-            hour = "0"+h;
-        }else{
-            hour = h+"";
-        }
-
-        if(m < 10){
-            minute ="0"+m;
-        }else{
-            minute =""+m;
-        }
-
-        if(s < 10){
-            seconds ="0"+s;
-        }else{
-            seconds = ""+s;
-        }
-
-        return hour+":"+minute+":"+seconds+pre;
-    }
-
     public boolean isDrawerOpen() {
+        adapter.notifyDataSetChanged();
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
@@ -225,6 +273,8 @@ public class TimingDrawerLeft extends Fragment {
             }
         };
 
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
@@ -241,18 +291,7 @@ public class TimingDrawerLeft extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public void openLeftDrawer(){
-        mDrawerLayout.openDrawer(Gravity.END);
-    }
-
-    public void closeLeftDrawer(){
-        mDrawerLayout.closeDrawers();
-    }
-
-    public void startChrono(){
-        a.setToNow();
-        time.setText(a.format("%H:%M:%S"));
-
+    public void startChrono() {
         tick.start();
     }
 
@@ -260,7 +299,7 @@ public class TimingDrawerLeft extends Fragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
+            mCallbacks = (LeftDrawerCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
@@ -293,13 +332,15 @@ public class TimingDrawerLeft extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openDrawer(){
+        mDrawerLayout.openDrawer(Gravity.START);
+    }
+
+    public void closeDrawer(){
+        mDrawerLayout.closeDrawer(Gravity.START);
     }
 
     /**
@@ -308,22 +349,70 @@ public class TimingDrawerLeft extends Fragment {
      */
     private void showGlobalContextActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
     }
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
     }
 
+    public void setupStartlist(ArrayList<Startlist> startlistElements) {
+        competition = controller.getCompetitions().get(controller.getSelectedCompetition());
+        date = competition.getDate();
+        a = new Time();
+        b = new Time();
+
+        for (Startlist startlist : startlistElements) {
+
+
+            Startgroup startgroup = controller.getGroups().get(startlist.getStartId());
+
+            int difference = startlist.getDifference() + (startgroup.getStartHour() * 3600) + (startgroup.getStartMinute() * 60) + startgroup.getStartSecond();
+            int hour = difference / 3600;
+            int minute = (difference % 3600) / 60;
+            int second = (difference % 3600) % 60;
+
+            int[] arr = controller.parseDate(date);
+
+            int day = arr[0];
+            if(hour > 23){
+                day = day + hour/24;
+                hour = hour%24;
+
+            }
+            int month = arr[1];
+            int year = arr[2];
+
+            a.setToNow();
+            b.setToNow();
+            b.year = year;
+            b.month = month;
+            b.monthDay = day;
+            b.hour = hour;
+            b.minute = minute;
+            b.second = second;
+
+            if (b.after(a)) {
+                mData.add(startlist);
+            }
+
+        }
+
+        if(mData.size() > 0){
+            b = null;
+        }
+
+        adapter = new StartlistAdapter(getActivity(), R.layout.timing_startlist_element, mData);
+        mDrawerListView.setAdapter(adapter);
+
+        startChrono();
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public static interface LeftDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
     }
 }

@@ -5,7 +5,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -17,14 +20,26 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+
+import split.timing.helpers.Controller;
+import split.timing.helpers.DBHelper;
+import split.timing.helpers.SwipeToDismissListener;
+import split.timing.helpers.TimedAdapter;
+import split.timing.helpers.UndoBarController;
+import split.timing.items.Timed;
 
 /**
  * Created by Antec on 03.06.2014.
  */
-public class TimingDrawerRight extends Fragment {
+public class TimingDrawerRight extends Fragment implements
+        UndoBarController.UndoListener{
 
     /**
      * Remember the position of the selected item.
@@ -40,7 +55,7 @@ public class TimingDrawerRight extends Fragment {
     /**
      * A pointer to the current callbacks instance (the Activity).
      */
-    private NavigationDrawerCallbacks mCallbacks;
+    private RightDrawerCallbacks mCallbacks;
 
     /**
      * Helper component that ties the action bar to the navigation drawer.
@@ -49,16 +64,31 @@ public class TimingDrawerRight extends Fragment {
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
+    private TextView defaultText;
     private View mFragmentContainerView;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
+    private int competitionId = -1;
+    int backUpPosition = -1;
+    int backId = -1;
+    ArrayList<Timed> backUpList;
+
+    boolean dismissed = false;
+    ArrayList<Timed> numbers;
+
+    private TimedAdapter adapter;
+    UndoBarController undoBarController;
+
+    Controller controller = Controller.getInstance();
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getActionBar().setDisplayHomeAsUpEnabled(false);
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -70,44 +100,146 @@ public class TimingDrawerRight extends Fragment {
         }
 
         // Select either the default item (0) or the last selected item.
-        selectItem(mCurrentSelectedPosition);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Indicate that this fragment would like to influence the set of actions in the action bar.
-        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mDrawerListView = (ListView) inflater.inflate(
-                R.layout.timing_drawer_right, container, false);
+
+        View rootView = inflater.inflate(R.layout.timing_drawer_right,container,false);
+        competitionId = controller.getSelectedCompetition();
+
+        mDrawerListView = (ListView)rootView.findViewById(R.id.timing_drawer_right_listview);
+        defaultText  = (TextView)rootView.findViewById(R.id.timing_drawer_right_default_text);
+
+        createList(true);
+
+        adapter.setNotifyOnChange(true);
+
+        undoBarController = new UndoBarController(rootView.findViewById(R.id.timing_drawer_right_undobar), this);
+
+
+        final SwipeToDismissListener dismissListener = new SwipeToDismissListener(mDrawerListView,
+                new SwipeToDismissListener.DismissCallbacks() {
+                    @Override
+                    public boolean canDismiss(int position) {
+                        return true;
+                    }
+
+                    @Override
+                    public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+
+
+                        deleteOnDismiss();
+
+                        for (int position : reverseSortedPositions) {
+
+                            if(numbers.size() >= position) {
+
+                                if (numbers.size() > 0) {
+                                    backId = numbers.get(position).getId();
+                                }
+                                
+                                String showText = numbers.get(position).getNumber()+"";
+                                if(showText.equals("-1")){
+                                    showText = getString(R.string.empty_time);
+                                }
+
+                                backUpPosition = position;
+                                undoBarController.showUndoBar(
+                                        false,
+                                        showText,
+                                        null);
+
+                                dismissed = true;
+                                controller.cutLapCounter(numbers.get(position).getNumber());
+                                numbers.remove(position);
+                                mCallbacks.refreshQuickSelect(0);
+                                checkDefaultText();
+
+                                Handler handler = new Handler();
+                                handler.postDelayed(new Runnable() {
+                                    public void run() {
+                                        deleteOnDismiss();
+                                    }
+                                }, 5000);
+                            }
+                        }
+
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+        );
+
+        mDrawerListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                dismissListener.setEnabled(true);
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                dismissListener.setEnabled(false);
+            }
+        });
+
+        mDrawerListView.setOnTouchListener(dismissListener);
+        mDrawerListView.setAdapter(adapter);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectItem(position);
+
+                if(numbers.get(position).getNumber() < 0){
+                    mCallbacks.showTimedDetailDialog(numbers.get(position).getId(),numbers.get(position).getNumber(),-1,position);
+                }else{
+                    mCallbacks.showTimedDetailDialog(numbers.get(position).getId(),numbers.get(position).getNumber(),controller.getStartlistElements().get(numbers.get(position).getNumber()).getId(),position);
+                }
             }
         });
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
-                getActionBar().getThemedContext(),
-                android.R.layout.simple_list_item_activated_1,
-                android.R.id.text1,
-                new String[]{
-                        "Overview",
-                        "Sportsmen",
-                        "Groups",
-                        "Competitions",
-                        "Timing"
-                }
-        ));
-        mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        return mDrawerListView;
+
+        checkDefaultText();
+
+        return rootView;
+    }
+
+    private void createList(boolean counter) {
+        numbers = new ArrayList<Timed>();
+        backUpList = new ArrayList<Timed>();
+
+        DBHelper dbHelper = new DBHelper();
+//        Cursor cursor = dbHelper.select("SELECT * FROM Timed JOIN Startlist WHERE Timed.number = Startlist.number OR Timed.number='-1' AND Startlist.competitionId ="+competitionId +" ORDER BY Timed.timed");
+        Cursor cursor = dbHelper.select("SELECT * FROM Timed WHERE competitionId ="+competitionId +" ORDER BY timed DESC");
+
+        while (cursor.moveToNext()){
+            Timed timed = new Timed();
+            timed.setId(cursor.getInt(0));
+            timed.setNumber(cursor.getInt(1));
+            timed.setTimedInMillis(Long.parseLong(cursor.getString(2)));
+            timed.setRunInMillis(Long.parseLong(cursor.getString(3)));
+            timed.setLap(cursor.getInt(4));
+
+            numbers.add(cursor.getPosition(), timed);
+            backUpList.add(cursor.getPosition(),timed);
+
+            if(counter) {
+                controller.putLapCounter(cursor.getInt(1));
+            }
+        }
+
+        adapter = new TimedAdapter(getActivity(), numbers);
+
+        cursor.close();
+        dbHelper.close();
     }
 
     public boolean isDrawerOpen() {
+        ((ArrayAdapter)mDrawerListView.getAdapter()).notifyDataSetChanged();
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
@@ -167,6 +299,8 @@ public class TimingDrawerRight extends Fragment {
             }
         };
 
+        mDrawerToggle.setDrawerIndicatorEnabled(false);
+
         // If the user hasn't 'learned' about the drawer, open it to introduce them to the drawer,
         // per the navigation drawer design guidelines.
         if (!mUserLearnedDrawer && !mFromSavedInstanceState) {
@@ -184,35 +318,11 @@ public class TimingDrawerRight extends Fragment {
         mDrawerLayout.setDrawerListener(mDrawerToggle);
     }
 
-    public void selectItem(int position) {
-        mCurrentSelectedPosition = position;
-        if (mDrawerListView != null) {
-            mDrawerListView.setItemChecked(position, true);
-        }
-        if (mDrawerLayout != null) {
-            mDrawerLayout.closeDrawer(mFragmentContainerView);
-        }
-        if (mCallbacks != null) {
-            mCallbacks.onNavigationDrawerItemSelected(position);
-        }
-    }
-
-    public void openRightDrawer() {
-        if (!isDrawerOpen()) {
-            mDrawerLayout.openDrawer(mDrawerListView);
-        }
-
-    }
-
-    public void closeRightDrawer() {
-        mDrawerLayout.closeDrawers();
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
-            mCallbacks = (NavigationDrawerCallbacks) activity;
+            mCallbacks = (RightDrawerCallbacks) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException("Activity must implement NavigationDrawerCallbacks.");
         }
@@ -222,12 +332,26 @@ public class TimingDrawerRight extends Fragment {
     public void onDetach() {
         super.onDetach();
         mCallbacks = null;
+        deleteOnDismiss();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        deleteOnDismiss();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        createList(false);
+        mDrawerListView.setAdapter(adapter);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
 
     @Override
@@ -241,34 +365,24 @@ public class TimingDrawerRight extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // If the drawer is open, show the global app actions in the action bar. See also
         // showGlobalContextActionBar, which controls the top-left area of the action bar.
-        inflater.inflate(R.menu.timing, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    public void setOpen(boolean isOpen) {
-        this.isOpen = isOpen;
-    }
-
-    boolean isOpen = false;
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-
-        if (item.getItemId() == R.id.action_example) {
-            if (!isOpen) {
-                mDrawerLayout.openDrawer(Gravity.END);
-                isOpen = true;
-            } else {
-                mDrawerLayout.closeDrawers();
-                isOpen = false;
-            }
-        }
-
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void openDrawer(){
+
+        View focus = getActivity().getCurrentFocus();
+        mDrawerLayout.openDrawer(Gravity.END);
+
+        focus.requestFocus();
+    }
+
+    public void closeDrawer(){
+        mDrawerLayout.closeDrawer(Gravity.END);
     }
 
     /**
@@ -277,22 +391,121 @@ public class TimingDrawerRight extends Fragment {
      */
     private void showGlobalContextActionBar() {
         ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
     }
 
     private ActionBar getActionBar() {
         return getActivity().getActionBar();
     }
 
+    private void checkDefaultText(){
+
+        if(numbers.size()== 0){
+            mDrawerListView.setVisibility(View.GONE);
+            defaultText.setVisibility(View.VISIBLE);
+        }else{
+            mDrawerListView.setVisibility(View.VISIBLE);
+            defaultText.setVisibility(View.GONE);
+        }
+    }
+
+    public void setTime(Timed number){
+
+        numbers.add(0,number);
+        backUpList.add(0,number);
+        checkDefaultText();
+        adapter.notifyDataSetChanged();
+        mCallbacks.refreshQuickSelect(number.getNumber());
+    }
+
+
+    public void changeListItem(int position, int number, int timedId){
+
+        Timed t = new Timed();
+        DBHelper db = new DBHelper();
+        Cursor c = db.select("SELECT * FROM Timed WHERE _id="+timedId);
+        c.moveToFirst();
+
+        t.setId(timedId);
+        t.setLap(c.getInt(4));
+        t.setNumber(number);
+        t.setRunInMillis(c.getLong(3));
+        t.setTimedInMillis(c.getLong(2));
+
+        c.close();
+        db.close();
+
+        numbers.remove(position);
+        backUpList.remove(position);
+        numbers.add(position,t);
+        backUpList.add(position,t);
+
+        checkDefaultText();
+        adapter.notifyDataSetChanged();
+    }
+
+    public void deleteListItem(int position){
+        if(!dismissed) {
+            controller.cutLapCounter(numbers.get(position).getNumber());
+            numbers.remove(position);
+            backUpList.remove(position);
+        }else {
+            dismissed = false;
+        }
+
+        checkDefaultText();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onUndo(Parcelable token) {
+        dismissed = false;
+
+        if(numbers.size() == 0){
+            numbers.addAll(backUpList);
+
+        }else {
+
+            if (numbers.size() == backUpPosition) {
+                numbers.add(backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),numbers.size());
+            } else {
+                numbers.add(backUpPosition, backUpList.get(backUpPosition));
+                //adapter.addItem(backUpList.get(backUpPosition),backUpPosition);
+            }
+
+            controller.putLapCounter(backUpList.get(backUpPosition).getNumber());
+        }
+
+        checkDefaultText();
+
+        adapter.notifyDataSetChanged();
+    }
+
+    private void deleteOnDismiss() {
+        if (backUpPosition >= 0 && dismissed) {
+            DBHelper db = new DBHelper();
+            db.sqlCommand("DELETE FROM Timed WHERE _id="+backUpList.get(backUpPosition).getId());
+            db.close();
+
+            mCallbacks.onItemDelete(backUpList.get(backUpPosition).getNumber());
+            backUpList.remove(backUpPosition);
+
+        }
+
+        checkDefaultText();
+    }
+
     /**
      * Callbacks interface that all activities using this fragment must implement.
      */
-    public static interface NavigationDrawerCallbacks {
+    public static interface RightDrawerCallbacks {
         /**
          * Called when an item in the navigation drawer is selected.
          */
-        void onNavigationDrawerItemSelected(int position);
+        public void refreshQuickSelect(int input);
+
+        void showTimedDetailDialog(int timedId, int number, int startlistId, int position);
+
+        void onItemDelete(int number);
     }
 }

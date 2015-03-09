@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item android:id="@+id/list_sort"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_sort_white_48dp"
         android:showAsAction="ifRoom"
-        android:title="@string/sort"/>
+        android:title="Sort"/>
 
 </menu><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/menu/list_fragment.xml -->

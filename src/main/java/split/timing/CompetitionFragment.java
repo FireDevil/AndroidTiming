@@ -204,8 +204,8 @@ public class CompetitionFragment extends Fragment implements
                     int pos = 0;
 
                     while (c.moveToNext()) {
-                        mData.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12),c.getInt(13)));
-                        backUpList.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12),c.getInt(13)));
+                        mData.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12)));
+                        backUpList.add(new Startgroup(c.getInt(4), c.getString(5), c.getInt(6), c.getInt(7), c.getInt(8),c.getInt(9), c.getFloat(10), c.getInt(11), c.getInt(12)));
                         ids.put(pos, c.getInt(4));
                         pos++;
                     }

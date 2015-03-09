@@ -1,0 +1,30 @@
+<FrameLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_marginBottom="-56dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <GridView
+        android:id="@+id/timing_center_select_grid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="80dp"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:horizontalSpacing="4dp"
+        android:verticalSpacing="4dp"
+        android:layout_marginBottom="60dp"
+        android:numColumns="3"/>
+
+    <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/timing_grid_set_btn"
+        android:layout_width="@dimen/slide_up_panel_height"
+        android:layout_height="@dimen/slide_up_panel_height"
+        android:layout_gravity="center|top"
+        android:layout_marginTop="4dp"
+        android:background="@drawable/ripple"
+        android:src="@drawable/ic_alarm_add_white_24dp"
+        app:cb_color="@color/gruen"
+        app:cb_pressed_ring_width="1dip" />
+
+</FrameLayout>

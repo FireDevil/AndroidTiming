@@ -33,7 +33,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.Adapter;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 
@@ -227,7 +229,7 @@ private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
     private void updateNeighborViewsForID(long itemID) {
         int position = getPositionForID(itemID);
 
-        StableArrayAdapter adapter = ((StableArrayAdapter)getAdapter());
+        Adapter adapter = getAdapter();
         mAboveItemId = adapter.getItemId(position - 1);
         mBelowItemId = adapter.getItemId(position + 1);
 
@@ -237,7 +239,8 @@ private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
     public View getViewForID (long itemID) {
         int firstVisiblePosition = getFirstVisiblePosition();
 
-        StableArrayAdapter adapter = ((StableArrayAdapter)getAdapter());
+        Adapter adapter = getAdapter();
+
         for(int i = 0; i < getChildCount(); i++) {
             View v = getChildAt(i);
 
@@ -408,7 +411,7 @@ private AdapterView.OnItemLongClickListener mOnItemLongClickListener =
         Object temp = arrayList.get(indexOne);
         arrayList.set(indexOne, arrayList.get(indexTwo));
         arrayList.set(indexTwo, temp);
-        ((StableArrayAdapter)getAdapter()).notifyDataSetChanged();
+        ((ArrayAdapter)getAdapter()).notifyDataSetChanged();
     }
 
 

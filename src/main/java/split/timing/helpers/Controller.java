@@ -1,6 +1,8 @@
 package split.timing.helpers;
 
+import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,6 +12,7 @@ import split.timing.items.Competition;
 import split.timing.items.Sportsmen;
 import split.timing.items.Startgroup;
 import split.timing.items.Startlist;
+import split.timing.items.Timed;
 
 public class Controller {
 
@@ -20,6 +23,7 @@ public class Controller {
     private TreeMap<Integer, Startlist> startlistElements;
     private HashMap<Integer, Sportsmen> numbers;
     private HashMap<Integer, Startgroup> groups;
+    private HashMap<Integer,Integer> lapCounter;
     private int selectedCompetition = -1;
     private int selectedStartgroup = -1;
 
@@ -39,6 +43,7 @@ public class Controller {
         startNumbers = new ArrayList<Integer>();
         groups = new HashMap<Integer, Startgroup>();
         competitions = new HashMap<Integer, Competition>();
+        lapCounter = new HashMap<Integer, Integer>();
     }
 
     // Eine nicht synchronisierte Zugriffsmethode auf Klassenebene.
@@ -53,6 +58,7 @@ public class Controller {
         startlistElements = new TreeMap<Integer, Startlist>();
         numbers = new HashMap<Integer, Sportsmen>();
         groups = new HashMap<Integer, Startgroup>();
+        lapCounter = new HashMap<Integer, Integer>();
         selectedCompetition = -1;
         selectedStartgroup = -1;
         competitions.clear();
@@ -115,7 +121,7 @@ public class Controller {
     }
 
     public int getSelectedCompetition() {
-        return selectedCompetition;
+        return this.selectedCompetition;
     }
 
     public void setSelectedCompetition(int selectedCompetition) {
@@ -174,6 +180,99 @@ public class Controller {
 
 
         db.close();
+
+        setSportsmen(sportsmen);
     }
 
+    public static int[] parseDate(String date){
+        int[] result = new int[3];
+
+        String sub = "";
+        int temp = date.indexOf('.');
+        result[0] = Integer.parseInt(date.substring(0, date.indexOf('.')));
+        sub = date.substring(temp + 1, date.length());
+        result[1] = Integer.parseInt(sub.substring(0, sub.indexOf('.'))) - 1;
+        temp = sub.indexOf('.') + 1;
+        sub = sub.substring(temp);
+        result[2] = Integer.parseInt(sub);
+
+        return result;
+    }
+
+    public HashMap<Integer, Integer> getLapCounter() {
+        return lapCounter;
+    }
+
+    public void setLapCounter(HashMap<Integer, Integer> lapCounter) {
+        this.lapCounter = lapCounter;
+    }
+
+    public void putLapCounter(int number){
+        if(lapCounter.containsKey(number)){
+            int lap = lapCounter.get(number);
+            lap++;
+            lapCounter.remove(number);
+            lapCounter.put(number,lap);
+        }else{
+            lapCounter.put(number,1);
+        }
+    }
+
+    public void cutLapCounter(int number){
+        if(lapCounter.containsKey(number)){
+            if(lapCounter.get(number) > 1){
+                int lap = lapCounter.get(number);
+                lap--;
+                lapCounter.remove(number);
+                lapCounter.put(number,lap);
+            }else{
+                lapCounter.remove(number);
+            }
+        }
+    }
+
+    public Timed getTimedObject(int timedId){
+
+        Timed timed = new Timed();
+
+        DBHelper dbHelper = new DBHelper();
+        Cursor cursor = dbHelper.select("SELECT * FROM Timed WHERE _id="+timedId);
+
+        if(cursor.getCount() == 0){
+            return null;
+        }
+
+        cursor.moveToFirst();
+
+        timed.setId(cursor.getInt(0));
+        timed.setNumber(cursor.getInt(1));
+        timed.setTimedInMillis(cursor.getLong(2));
+        timed.setRunInMillis(cursor.getLong(3));
+        timed.setLap(cursor.getInt(4));
+        timed.setCompetitionId(cursor.getInt(5));
+
+        cursor.close();
+        dbHelper.close();
+
+        return timed;
+    }
+
+    public void reorderTimedObjects(int number){
+        int highLap = 0;
+        DBHelper db = new DBHelper();
+        Cursor cursor = db.select("SELECT * FROM Timed WHERE number="+number+" AND competitionId="+getSelectedCompetition()+" ORDER BY timed ASC");
+
+        int lap = 1;
+        while (cursor.moveToNext()){
+            ContentValues values = new ContentValues();
+            values.put("lap",lap);
+            db.update("Timed",values," _id="+cursor.getInt(0));
+
+            highLap = lap;
+            lap++;
+        }
+
+        cursor.close();
+        db.close();
+    }
 }

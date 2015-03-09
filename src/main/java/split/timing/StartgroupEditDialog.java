@@ -210,7 +210,7 @@ public class StartgroupEditDialog extends DialogFragment {
         if (!name.getText().toString().equals("")) {
             DBHelper db = new DBHelper();
 
-            startgroup = new Startgroup(0, name.getText().toString(), hourPicker.getValue(), minutePicker.getValue(),secondPicker.getValue(), spinner.getSelectedItemPosition(), Float.parseFloat(distance.getText().toString()), Integer.parseInt(interval.getText().toString()), Integer.parseInt(start.getText().toString()),-1);
+            startgroup = new Startgroup(0, name.getText().toString(), hourPicker.getValue(), minutePicker.getValue(),secondPicker.getValue(), spinner.getSelectedItemPosition(), Float.parseFloat(distance.getText().toString()), Integer.parseInt(interval.getText().toString()), Integer.parseInt(start.getText().toString()));
 
             if (startgroupId < 0) {
                 exists = false;
@@ -243,7 +243,6 @@ public class StartgroupEditDialog extends DialogFragment {
                 values.put("startminute", startgroup.getStartMinute());
                 values.put("startsecond",startgroup.getStartSecond());
                 values.put("startnum", startgroup.getStartNum());
-                values.put("jerseynum",startgroup.getJerseyNum());
                 db.update("Startgroup", values, "_id=" + startgroupId);
 
             }

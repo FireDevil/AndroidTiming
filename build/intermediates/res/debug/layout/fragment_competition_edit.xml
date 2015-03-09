@@ -88,7 +88,7 @@
         android:layout_height="80dip"
         android:layout_gravity="bottom|center_horizontal"
         android:src="@android:drawable/ic_menu_save"
-        app:cb_color="#0099CC"
+        app:cb_color="@color/blau"
         app:cb_pressed_ring_width="8dip" />
 
 </FrameLayout><!-- From: file:/C:/Users/Antec/SkyDrive/Android/AndroidTiming/AndroidTiming/src/main/res/layout/fragment_competition_edit.xml -->

@@ -95,7 +95,6 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("distance",sg.getDistance());
         values.put("interval",sg.getInterval());
         values.put("startnum",sg.getStartNum());
-        values.put("jerseynum",sg.getJerseyNum());
         myDataBase.insert("Startgroup",null,values);
 
     }

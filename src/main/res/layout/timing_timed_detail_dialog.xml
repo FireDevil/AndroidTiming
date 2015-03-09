@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/timed_dialog_scroll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/timed_dialog_first_layout"
+            android:paddingBottom="8dp">
+
+
+            <FrameLayout
+                android:layout_width="@dimen/slide_up_panel_height"
+                android:layout_height="@dimen/slide_up_panel_height"
+                android:layout_gravity="center"
+                android:id="@+id/timed_dialog_number_framelayout"
+                android:animateLayoutChanges="true">
+
+                <split.timing.helpers.CircleButton xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/timed_dialog_btn"
+                    android:layout_width="@dimen/slide_up_panel_height"
+                    android:layout_height="@dimen/slide_up_panel_height"
+                    app:cb_color="@color/gruen"
+                    app:cb_pressed_ring_width="0dip" />
+
+
+                <TextView
+                    android:id="@+id/timed_dialog_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:singleLine="true"
+                    android:text="X"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@android:color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+            </FrameLayout>
+
+            <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:cardView="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/timed_dialog_card"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/slide_up_panel_height"
+                cardView:cardCornerRadius="2dp"
+                cardView:cardPreventCornerOverlap="true"
+                android:orientation="vertical"
+                android:visibility="gone"
+                cardView:cardBackgroundColor="@color/gruen">
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:padding="4dp"
+                    android:inputType="number"
+                    android:ems="10"
+                    android:maxLength="4"
+                    android:maxLines="1"
+                    android:id="@+id/timed_dialog_edit"
+                    android:background="@drawable/edittext_white"
+                    android:textSize="25sp"
+                    android:textColor="@android:color/white"
+                    android:layout_gravity="center_horizontal" />
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/gruen"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text=" "
+                    android:gravity="left"
+                    android:id="@+id/timed_dialog_info" />
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/timed_dialog_trikot"
+                    android:src="@drawable/trikot_rot"
+                    android:layout_weight="0.5" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text=" "
+                    android:gravity="right"
+                    android:id="@+id/timed_dialog_difference" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="left"
+                    android:id="@+id/timed_dialog_groupname" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="right"
+                    android:id="@+id/timed_dialog_run" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="left"
+                    android:id="@+id/timed_dialog_lap" />
+
+                <TextView
+                    android:layout_width="0dip"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Medium Text"
+                    android:gravity="right"
+                    android:id="@+id/timed_dialog_timed" />
+            </TableRow>
+        </LinearLayout>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/gruen"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:id="@+id/timed_dialog_last_layout">
+
+            <TextView
+                android:id="@+id/timed_dialog_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Large Text"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <TextView
+                android:id="@+id/timed_dialog_club"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <TextView
+                android:id="@+id/timed_dialog_federation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Medium Text"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

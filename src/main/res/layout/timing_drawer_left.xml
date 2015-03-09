@@ -1,34 +1,51 @@
 <LinearLayout
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
+    android:background="@android:color/background_light"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TableRow
         android:layout_width="fill_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.1"
-        android:layout_marginBottom="8dp">
+        android:layout_height="wrap_content"
+        android:background="@android:color/black">
 
         <Chronometer
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/chrono"
+            android:id="@+id/timing_drawer_left_chrono"
             android:layout_weight="1"
-            android:visibility="gone" />
+            android:visibility="invisible" />
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="New Text"
-            android:id="@+id/chronoText"
-            android:gravity="bottom|right"
-            android:textSize="30sp" />
+            android:layout_height="wrap_content"
+            android:id="@+id/timing_drawer_left_chronoText"
+            android:gravity="center"
+            android:textSize="30sp"
+            android:textColor="@android:color/white"/>
     </TableRow>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:id="@+id/listView"
+        android:animateLayoutChanges="true"
+        android:clipToPadding="false"
+        android:id="@+id/timing_drawer_left_listView"
         android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@android:color/darker_gray"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="time since last starter"
+        android:visibility="invisible"
+        android:id="@+id/timing_drawer_left_default_text" />
+
+
 </LinearLayout>

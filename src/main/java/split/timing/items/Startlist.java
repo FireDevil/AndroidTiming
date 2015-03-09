@@ -18,7 +18,7 @@ public class Startlist {
     ArrayList<Startgroup> startgroups;
 
     public Startlist(){
-
+        this.id = -1;
     }
 
     public Startlist(int id, int number, boolean jersey, int startposition, int compId, int startId, int sportsmenId, int difference) {

@@ -28,7 +28,7 @@ public class DynamicAdapter extends BaseDynamicGridAdapter {
         int height;
 
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.grid_item, null);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.empty_grid_item, null);
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         } else {
@@ -36,10 +36,10 @@ public class DynamicAdapter extends BaseDynamicGridAdapter {
         }
         holder.build(getItem(position).toString());
 
-        space = (Space)convertView.findViewById(R.id.grid_item_space);
+//        space = (Space)convertView.findViewById(R.id.grid_item_space);
 
         if(position%getColumnCount()-1 != 0){
-            space.setVisibility(View.GONE);
+//            space.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -49,7 +49,7 @@ public class DynamicAdapter extends BaseDynamicGridAdapter {
         private TextView titleText;
 
         private ViewHolder(View view) {
-            titleText = (TextView) view.findViewById(R.id.grid_item_text);
+//            titleText = (TextView) view.findViewById(R.id.grid_item_text);
         }
 
         void build(String title) {

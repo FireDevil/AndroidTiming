@@ -87,6 +87,6 @@ public class Competition {
 
     @Override
     public String toString(){
-        return getId()+"";
+        return getName()+"";
     }
 }

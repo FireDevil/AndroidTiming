@@ -172,7 +172,7 @@ public class StartgroupFragment  extends Fragment implements
                 Cursor comp = db.select("SELECT * FROM Startgroup WHERE _id=" + startgroupId);
                 comp.moveToFirst();
 
-                startgroup = new Startgroup(comp.getInt(0), comp.getString(1), comp.getInt(2), comp.getInt(3), comp.getInt(4),comp.getInt(5), comp.getFloat(6), comp.getInt(7), comp.getInt(8),comp.getInt(9));
+                startgroup = new Startgroup(comp.getInt(0), comp.getString(1), comp.getInt(2), comp.getInt(3), comp.getInt(4),comp.getInt(5), comp.getFloat(6), comp.getInt(7), comp.getInt(8));
 
                 comp.close();
 
@@ -214,7 +214,7 @@ public class StartgroupFragment  extends Fragment implements
                         values.put("jersey",false);
                         values.put("number",set);
                         values.put("startposition",c.getCount()+pos);
-                        values.put("difference",(c.getCount()+pos)*startgroup.getInterval());
+                        values.put("difference",((c.getCount()+pos)*startgroup.getInterval()));
                         db.insert("Startlist",values);
 
                         pos++;
@@ -231,23 +231,11 @@ public class StartgroupFragment  extends Fragment implements
                     while (c.moveToNext()) {
                         boolean jersey = Boolean.parseBoolean(c.getString(2));
 
-                        if(c.getInt(1) == startgroup.getJerseyNum() && !jersey){
-                            jersey = true;
-                        }
-
-
                         mData.add(new Startlist(c.getInt(0),c.getInt(1),jersey,c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6),c.getInt(7)));
                         backUpList.add(new Startlist(c.getInt(0),c.getInt(1),Boolean.parseBoolean(c.getString(2)),c.getInt(3),c.getInt(4),c.getInt(5),c.getInt(6),c.getInt(7)));
                         ids.put(pos, c.getInt(0));
                         pos++;
                     }
-
-                    if(startgroup.getJerseyNum() > -1 && (startgroup.getStartNum()+pos) < startgroup.getJerseyNum()){
-                        startgroup.setJerseyNum(-1);
-                    }
-
-
-
 
                 }
 
@@ -482,29 +470,19 @@ public class StartgroupFragment  extends Fragment implements
 
         ContentValues values;
         int position=0;
-        boolean jersey = false;
-
         for(Startlist s : mData){
-
-
-            if(!s.isJersey() && startgroup.getStartNum()+position == startgroup.getJerseyNum()){
-                jersey = true;
-            }else{
-                jersey = false;
-            }
-
 
             values = new ContentValues();
             values.put("sportsmenId",s.getSportsmenId());
             values.put("startgroupId",startgroupId);
             values.put("competitionId",competitionId);
-            values.put("jersey",jersey);
+            values.put("jersey",s.isJersey());
             values.put("number", s.getNumber());
             values.put("startposition",position);
             values.put("difference",position*startgroup.getInterval());
             db.insert("Startlist",values);
 
-            startlist.add(new Startlist(s.getId(),s.getNumber(),jersey,position,competitionId,startgroupId,s.getSportsmenId(),position*startgroup.getInterval()));
+            startlist.add(new Startlist(s.getId(),s.getNumber(),s.isJersey(),position,competitionId,startgroupId,s.getSportsmenId(),position*startgroup.getInterval()));
 
             position++;
         }
